@@ -39,10 +39,10 @@ public class Node {
 		
 		
 	}
-	public void addStart(Character val)
+	public void addStart(Character val ,Node node)
 	{
 		name = 0;
-		next[index] = new Node();
+		next[index] = node;
 		value[index] = val;
 		index++;
 	}

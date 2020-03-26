@@ -6,6 +6,7 @@ public class NFA {
 	int finishNum;
 	Stack star;
 	TransitionTable table;
+	int num ;
 	//after adding all regular expressions to the Arraylist in LexicalRules
 	//We need to combine them and make NFA for each of them
 	//Note that all of them will have only ONE start node
@@ -27,14 +28,15 @@ public class NFA {
 	{
 		//if the  expression has only one state 
 		//S-->a 
+		num = nodeNum;
 		if(!expression[1].contains("*")==true && !expression[1].contains("(")==true && !expression[1].contains("|")==true)
 		{
 			//add a simple node
 			addNode(expression[1].charAt(0));
-			
 			andNFA(expression[1] , 1);
 			addFinalNode(expression[0]);
 			nodeNum++;
+			node[0].addStart('~' , node[num]);
 		}
 		//if star,plus alone
 		else if(expression[1].contains("\\*")==true || !expression[1].contains("(")==true ) {
@@ -42,12 +44,14 @@ public class NFA {
 		}
 		
 		
+		
 	}
+	
 	private void addNode(Character exp)
 	{
 		table.addInput(exp);
-		node[0].addStart('~');
-		node[nodeNum]=node[0].getNext();
+	//	node[0].addStart('~');
+		node[nodeNum]=new Node();
 		node[nodeNum].nameIt(nodeNum);
 		node[nodeNum].addArrow(exp);
 		Node temp = node[nodeNum++];
@@ -73,6 +77,7 @@ public class NFA {
 			//replace the "\" that is between the expressions RESERVED SYMBOLS 
 			divide[i] = divide[i].replace("\\","");
 			divide[i] = divide[i].replace(" ", "");
+			num = nodeNum;
 			addNode(divide[i].charAt(0));
 			//we need to check if its length is greater than 1 then this is S-->AB ---TIMES---
 			if(divide[i].length() > 1) {
@@ -94,6 +99,7 @@ public class NFA {
 			else {
 			node[nodeNum++].next[0] = node[finishNum];
 			}
+			node[0].addStart('~' , node[num]);
 		}
 	
 		
@@ -141,11 +147,12 @@ public class NFA {
 		nodeNum++;
 		}	
 	}
-	public void keywords(String keyword)
+	public void keywords(String keyword) //handles the keywords and punctuations
 	{
 		//build NFA for the keywords 
-		node[0].addStart('~'); //same start state
-		node[nodeNum] = node[0].getNext(); 
+		num = nodeNum;
+		
+		node[nodeNum] = new Node(); 
 		//fill the nfa char by char
 		for(int i=0;i<keyword.length();i++)
 		{
@@ -161,6 +168,7 @@ public class NFA {
 		node[nodeNum].finish(keyword);
 		node[nodeNum].nameIt(nodeNum);
 		nodeNum++;
+		node[0].addStart('~',node[num]);  // add the start at the end 
 	}
 	
 	public void printTransTable()
