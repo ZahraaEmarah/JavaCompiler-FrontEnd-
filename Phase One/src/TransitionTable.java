@@ -32,20 +32,29 @@ public class TransitionTable {
 		System.out.print("||STATE" + "||   ");
 		for(int i=0;i<index;i++)
 			System.out.print(inputs[i] + "  ");
+		System.out.println("");
 	}
 
 	public void printTransitionTable(Node node,int nodeNum) //print the transition table 
 	{
-		for(int i=0;i<nodeNum;i++)
+		int in = node.index;
+		if(in <= 0)
+			in = 1;
+
+		for(int i=0;i<index;i++)
 		{
-			System.out.println("");
-			System.out.print("||"+i+"||      ");
-			for(int j=0;j<index;j++)
+			for(int j=0;j<in;j++)
 			{
-					System.out.print(transition[i][j] +"|");
+				if(node.inputsTable[i][j] == -1)
+				{
+					System.out.print("_");
+					break;
+				}
+					System.out.print(node.getInput(i,j) + " ");
 			}
-			
+			System.out.print("|");
 		}
+		System.out.println("");
 		
 	}
 	public void intializeTransition(int nodeNum)
@@ -58,9 +67,10 @@ public class TransitionTable {
 	}
 	public void buildTable(Node[] node,int nodeNum)
 	{
-		intializeTransition( nodeNum);
+		
 		for(int i=0;i<nodeNum;i++)
 		{
+			node[i].intialArray(index);
 			
 			for(int j=0;j<index;j++)
 			{
@@ -70,7 +80,8 @@ public class TransitionTable {
 					
 					if(node[i].value[k] == inputs[j])
 					{
-						transition[i][j] += Integer.toString(node[i].next[k].name) + "_";
+						//transition[i][j] += Integer.toString(node[i].next[k].name) + "_";
+						node[i].addInput(j,k , node[i].next[k].name);
 					}
 				}
 				
