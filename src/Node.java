@@ -2,7 +2,7 @@
 public class Node {
 	Node[] next; //Directed , and it may have several next states
 	Character[] value; //Value on the arrow 
-	int index;
+	public int index;
 	//each node I am directed to should have a value on it's arrow
 	//next[0] ---> the value on the arrow is value[0] next[0] = node[1]
 	//next[1] ---> the value on the arrow is value[1] and so on  
