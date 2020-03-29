@@ -65,50 +65,71 @@ public class DFA {
 			if (epsilon_closure[k].contains(",")) {
 				construct_DFA_table(epsilon_closure[k]);
 			}
-			// System.out.println(k + " epsilon is " + epsilon_closure[k]);
+			//System.out.println();
+		    //System.out.println(k + " epsilon is " + epsilon_closure[k]);
 		}
 	}
 
-	public void construct_DFA_table(String state) { // METHOD for start state
+	public void construct_DFA_table(String state) { 
+		arr.clear();
 		String[] states = state.split(",");
-		String link = "";
+		StringBuilder link ;
+		String tmp;
 
 		for (int j = 0; j < column - 1; j++) {
-
+             
+			link = new StringBuilder();
 			for (int i = 0; i < states.length; i++) {
-				int out = nodes[Integer.parseInt(states[i])].getInput(j, 0);
+				int out = nodes[Integer.parseInt(states[i])].getInput(j, 0); ///////BEWARE: NEEDS ADJUST
 				if (out != -1) {
-					link = link + "," + out;
+					link.append(epsilon_closure[out]) ;
+					link.append(",");
 				}
 			}
-			link = j + "-" + link;
-			ADD_output(link);
-			link = "";
+			tmp = j + "-" + link.toString();
+			Add_output_row(tmp);
+		
 		}
 		
 		DFA.add(arr);
-		System.out.print(DFA);
-		arr.clear();
+		System.out.println(arr);
+		//for(String a: arr)
+	
+		//if(arr.get(0) != "E" && is_New_State(arr.get(0)))
+		//////////// ENQUEUE //////////////////////
+		
+		//////////// DEQUEUE //////////////////////
+		construct_DFA_table(arr.get(0));
 	}
 
-	public void ADD_output(String linker) {
+	public void Add_output_row(String linker) {
 		String[] link = linker.split("-");
 		int index = Integer.parseInt(link[0]);
-		System.out.print(index + " --> ");
+		//System.out.print(index + " --> ");
 		StringBuilder s = new StringBuilder();;
 		if (link.length > 1) {
 			String[] val = link[1].split(",");
 			for (String a : val) {
 				s.append(a);
-				s.append("-");
+				s.append(",");
 			}
 		}else
 		{
 			s.append("E");
 		}
-
-		System.out.println(s);
-        arr.add(s.toString());
+		//System.out.println(s);
+        arr.add(s.toString());	
 	}
-
+	
+	public boolean is_New_State(String state)
+	{
+		if(DFA.isEmpty())
+			return true;
+		else if(DFA.contains(state))
+			return false;
+		else
+			return true;
+	}
 }
+
+   
