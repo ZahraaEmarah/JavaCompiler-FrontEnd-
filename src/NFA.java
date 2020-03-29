@@ -179,7 +179,7 @@ public class NFA {
 			table.printTransitionTable(node[i1], nodeNum);
 		}
 		
-		dfa = new DFA(node);	
-		dfa.convert_NFA_to_DFA(nodeNum, table.index);
+		dfa = new DFA(node, nodeNum, table.index);	
+		dfa.Parse_NFA(nodeNum, table.index);
 	}
 }
