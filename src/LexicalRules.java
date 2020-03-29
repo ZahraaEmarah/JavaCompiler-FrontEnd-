@@ -13,6 +13,7 @@ public class LexicalRules {
 	ArrayList<String> keywords = new ArrayList<String>();
 	ArrayList<String> punctuations = new ArrayList<String>();
 	NFA nfa = new NFA();
+	RegularDefinition regDefinition = new RegularDefinition();
 	
 	public void readFile() throws IOException
 	{
@@ -40,9 +41,20 @@ public class LexicalRules {
 	private void buildNFA()
 	{
 		System.out.println("Building the NFA...");
+		
 		//start node is comon to all the expressions
 		//loop on all the expressions in the array list , build each NFA with same start 
 		//Split the expressions 
+		for(int i = 0 ; i<regDef.size();i++)
+		{
+			//represent each regular definition with a symbol 
+			//which is a letter from it , make it Capital letter 
+			//we need to substitute the regular expression with this symbol 
+			String temp = regDef.get(i);
+			String[] temp2 = temp.split("=");
+			regDefinition.name(temp2[0] , temp2[1]);
+		}
+		regDefinition.endNames();
 		for(int i=0;i<regExp.size();i++)
 		{
 			//split the expression when you see ":" 
@@ -50,6 +62,7 @@ public class LexicalRules {
 			String temp = regExp.get(i);
 			String[] temp2 = temp.split(":");
 			//build the NFA for this expression
+			temp2[1]=regDefinition.contain(temp2[1]);
 		    nfa.buildNFA(temp2);
 		}
 		//Add the keywords to the NFA
