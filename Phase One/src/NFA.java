@@ -46,31 +46,41 @@ public class NFA {
 		int openB = 0;
 		int OR = 0;
 		int push = 1;
-		System.out.println(expression);
+		
 		for(int i=0;i<expression.length();i++)
 		{
 			push = 1;
 			if(expression.charAt(i)=='(') {
 				
 				openB=1;
+				if(OR>=1)
+					push=1;
+				else {
 				begin = popStack(begin,OR,1);
 				OR = 0;
 				push = 0;
+				}
 				
 			}
 			else if(expression.charAt(i)==')') {
 				
 				//pop till you find the closed bracket
+				if(OR > 1)
+					push=1;
+				else
+				{
 				begin = popStack(begin,OR,1);
 				OR=0;
 				openB=0;
+				}
 			}
 			 if(expression.charAt(i) == '|')
 				{
 				    push = 1;
-					OR = 1;	
+					OR++;	
 				}
 			 if(push == 1) {
+				 
      			 stack.push(expression.charAt(i));
 			 }
 		}
@@ -87,10 +97,12 @@ public class NFA {
 		while(!stack.empty())
 		{
 			//AND
-			String t = Character.toString(stack.pop());
-			if(!t.contains(")") == true) 
-			temp=temp+ t;
+			    String t = Character.toString(stack.pop());
+				temp = temp+t;
+			
 		}
+		if(!temp.contains("("))
+			temp = temp.replace(")", "");
 		
 		temp = reverseString(temp);
 		
@@ -108,7 +120,7 @@ public class NFA {
 		
 		
 		startNode = nodeNum;
-		if(OR == 1)
+		if(OR >= 1)
 		{
 			String[] arr = new String[2];
 			arr[0] = "";
@@ -175,25 +187,39 @@ public class NFA {
 		finishNum=0;
 		//we need to split the expression when we find "|"
 		String exp = expression[1];
+	    
 		String[] divide = exp.split("\\|");
 		node[start].index--;
 		int star;
+		System.out.println(exp);
 		for(int i=0;i<divide.length ; i++)
 		{
+			String[] save = divide ;
+			int change =0;
 			//replace the "\" that is between the expressions RESERVED SYMBOLS 
 			divide[i] = divide[i].replace("\\","");
 			divide[i] = divide[i].replace(" ", "");
+			if(divide[i].contains("(") && !divide[i].contains(")")){
+				String store = divide[i];
+				String[] storeDiv = divide; //store it temp 
+				i++;
+				save = divide;
+				divide[i] = store + '|'+ divide[i];
+			}
+			//we always assume that the expression inside the bracket will be another OR expression
 			int num = nodeNum;
 			addNode(divide[i].charAt(0));
 			node[nodeNum].nameIt(nodeNum);
 			node[start].addStart('~' , node[num]);
-			//System.out.println(node[start].next[1].name);
+			
 			//we need to check if its length is greater than 1 then this is S-->AB ---TIMES---
+			
 			if(divide[i].length() > 1) {
 				//loop to make new nodes after each other 
-				andNFA(divide[i] , 1);
-				
+				//handle the OR inside the bracket 
+				andNFA(divide[i] , 1);	
 			}
+			//System.out.println(finishNum);
 			node[nodeNum].nameIt(nodeNum);
 			
 			if(finishNum==0) { //comon finish node of them 
@@ -202,7 +228,6 @@ public class NFA {
 				nodeNum++;
 				node[nodeNum] = temp.getNext(); //final node
 				addFinalNode(expression[0],fin);
-				
 				nodeNum--;
 				node[nodeNum].next[node[nodeNum].index] = node[finishNum];
 				nodeNum = nodeNum+2;
@@ -211,26 +236,43 @@ public class NFA {
 				node[nodeNum].addStart('~', node[finishNum]);
 				nodeNum++;
 			}
+			if (change == 1)
+				divide = save;
 		}
 		
 		node[finishNum].addArrow('~');
 		node[nodeNum] = node[finishNum].getNext();
 		//this is used if this expression is repeated
 		startNode = start;
-		
 		finishNode = finishNum;
 		
 		
 
 	}
-	private void andNFA(String exp,int s) //handles REPEAT --OR--
-	{
+	private void andNFA(String exp,int s) //handles REPEAT for --OR-- 
+	{ //this also handles the case if inside a bracket there will be an OR expression
 		for(int j=s;j<exp.length();j++) {
 			startNode=nodeNum;
 			if(exp.charAt(j) == '*' && j+1<exp.length()) {
 				repeatStar();
 				j++;
 			}
+			if(exp.charAt(j) == '(')
+			{
+				System.out.println(exp.charAt(j));
+				String[] temp =exp.split("\\(");
+				exp = temp[temp.length-1];
+				exp=exp.replace(")", "");
+				String[] temp2 = new String[2];
+				temp2[0] = "";
+				temp2[1]=exp;
+				int save = finishNum;
+				NFAOR(temp2,0,1);
+				
+				finishNum=save;
+				return;
+			}
+			else
 			addN(exp.charAt(j));
 			finishNode=nodeNum;
 		}
