@@ -262,15 +262,20 @@ public class NFA {
 				System.out.println(exp.charAt(j));
 				String[] temp =exp.split("\\(");
 				exp = temp[temp.length-1];
-				exp=exp.replace(")", "");
+				String[] cont = exp.split("\\)");
+				exp=cont[0];
 				String[] temp2 = new String[2];
 				temp2[0] = "";
 				temp2[1]=exp;
 				int save = finishNum;
 				NFAOR(temp2,0,1);
-				
 				finishNum=save;
+				if(cont.length<=1) {
 				return;
+				}
+				exp = cont[1];
+				exp = exp.replace(cont[0],"");
+				j=-1;
 			}
 			else
 			addN(exp.charAt(j));
