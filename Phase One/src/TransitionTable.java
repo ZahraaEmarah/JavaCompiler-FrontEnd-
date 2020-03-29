@@ -14,6 +14,8 @@ public class TransitionTable {
 	public void addInput(Character add)
 	{
 		//check for duplicates first
+		if(add == '~')
+			return;
 		for(int i=0 ; i<index;i++)
 		{
 			if(inputs[i] == add)
@@ -43,6 +45,7 @@ public class TransitionTable {
 
 		for(int i=0;i<index;i++)
 		{
+			
 			for(int j=0;j<in;j++)
 			{
 				if(node.inputsTable[i][j] == -1)
@@ -57,16 +60,10 @@ public class TransitionTable {
 		System.out.println("");
 		
 	}
-	public void intializeTransition(int nodeNum)
-	{
-		for(int i=0;i<nodeNum;i++)
-		{
-			for(int j=0;j<index;j++)
-				transition[i][j]="_";
-		}
-	}
+	
 	public void buildTable(Node[] node,int nodeNum)
 	{
+		
 		
 		for(int i=0;i<nodeNum;i++)
 		{
@@ -80,8 +77,7 @@ public class TransitionTable {
 					
 					if(node[i].value[k] == inputs[j])
 					{
-						//transition[i][j] += Integer.toString(node[i].next[k].name) + "_";
-						node[i].addInput(j,k , node[i].next[k].name);
+     						node[i].addInput(j,k, node[i].next[k].name);
 					}
 				}
 				

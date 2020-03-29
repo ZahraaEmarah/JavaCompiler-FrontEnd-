@@ -3,6 +3,7 @@ public class Node {
 	Node[] next; //Directed , and it may have several next states
 	Character[] value; //Value on the arrow 
 	int index;
+	
 	//each node I am directed to should have a value on it's arrow
 	//next[0] ---> the value on the arrow is value[0] next[0] = node[1]
 	//next[1] ---> the value on the arrow is value[1] and so on  
@@ -41,7 +42,6 @@ public class Node {
 	}
 	public void addStart(Character val ,Node node)
 	{
-		name = 0;
 		next[index] = node;
 		value[index] = val;
 		index++;
@@ -56,9 +56,7 @@ public class Node {
 	{
 		int in = index;
 		if(in <= 0) {
-			
 			in = 1;
-			
 		}
 		inputsTable = new int[inputNum][in];
 		
@@ -70,7 +68,10 @@ public class Node {
 	}
 	public void addInput(int i , int j,int node)
 	{
-		inputsTable[i][j] = node;
+		int k=0;
+		while(inputsTable[i][k]!=-1)
+			k++;
+		inputsTable[i][k] = node;
 	}
 	//////////////////////////////////////
 	////// node[0]  inputsTable[0][0] = -1
