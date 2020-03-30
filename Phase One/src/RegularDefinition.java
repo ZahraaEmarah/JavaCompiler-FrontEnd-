@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class RegularDefinition {
-	String[] definition;
+	private ArrayList<String> definitions = new ArrayList<String>();
 	private ArrayList<String> names = new ArrayList<String>();
 	private ArrayList<String> actualNames = new ArrayList<String>();
 	
@@ -10,6 +10,8 @@ public class RegularDefinition {
 		int j=0;
 		while(true) {
 		if(!names.contains(Character.toString(Character.toUpperCase(exp.charAt(j))))) {
+			makeStringDef(actualName);
+			
 			names.add(Character.toString(Character.toUpperCase(exp.charAt(j))));
 			actualNames.add(exp);
 			break;
@@ -43,14 +45,35 @@ public class RegularDefinition {
 				return;
 			}
 			
-			
-			
 		}
 		j++;
 		}
 	}
+	public void makeStringDef(String exp)
+	{
+		String[] temp = exp.split("\\|");
+		String add="";
+		for(int i=0;i<temp.length;i++) {
+		String[] parse = temp[i].split("-");
+		int start = parse[0].charAt(0);
+		int end = parse[parse.length-1].charAt(0);
+	    for(int j=start;j<end;j++)
+	    {
+	    	add = add + (char)j;
+	    }
+	    
+		}
+		definitions.add(add);
+	}
+	public void printDef()
+	{
+		int i=0;
+		for(i=0;i<definitions.size();i++)
+			System.out.println(definitions.get(i));
+	}
 	public void endNames() //end with epsilon
 	{
+		printDef();
 		names.add("~");
 		actualNames.add("\\L");
 	}

@@ -336,5 +336,6 @@ public class NFA {
 		System.out.print("||"+i1+"||      ");
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
+		
 	}
 }

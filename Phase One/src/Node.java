@@ -17,8 +17,8 @@ public class Node {
 	public Node()
 	{
 		this.finishState = false;
-		next = new Node[100];
-		value = new Character[100];
+		next = new Node[200];
+		value = new Character[200];
 		index=0;
 		name = -1;
 	}
@@ -37,8 +37,6 @@ public class Node {
 	{
 		this.finishState=true;
 		langName = fname;
-		
-		
 	}
 	public void addStart(Character val ,Node node)
 	{
