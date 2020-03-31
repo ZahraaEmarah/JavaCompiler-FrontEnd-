@@ -5,6 +5,7 @@ public class NFA {
 	int nodeNum;
 	int finishNum;
 	Stack<Character> stack;
+	DFA dfa;
 	
 	TransitionTable table;
 	int num ;
@@ -336,6 +337,9 @@ public class NFA {
 		System.out.print("||"+i1+"||      ");
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
+		
+		dfa = new DFA(node, nodeNum, table.index);	
+		dfa.Parse_NFA(nodeNum, table.index);
 		
 	}
 }
