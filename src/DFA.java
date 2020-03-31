@@ -92,14 +92,14 @@ public class DFA {
 		}
 		
 		DFA.add(arr);
-		System.out.println(arr);
+		System.out.println(arr + "\n" + arr.size());
 		//for(String a: arr)
 	
 		//if(arr.get(0) != "E" && is_New_State(arr.get(0)))
 		//////////// ENQUEUE //////////////////////
 		
 		//////////// DEQUEUE //////////////////////
-		construct_DFA_table(arr.get(0));
+		//construct_DFA_table(arr.get(0));
 	}
 
 	public void Add_output_row(String linker) {
@@ -111,7 +111,7 @@ public class DFA {
 			String[] val = link[1].split(",");
 			for (String a : val) {
 				s.append(a);
-				s.append(",");
+				s.append("-");
 			}
 		}else
 		{
