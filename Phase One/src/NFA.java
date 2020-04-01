@@ -73,7 +73,7 @@ public class NFA {
 					push=1;
 				else
 				{
-				begin = popStack(begin,OR,0);
+				begin = popStack(begin,OR,1);
 				OR=0;
 				openB=0;
 				}
