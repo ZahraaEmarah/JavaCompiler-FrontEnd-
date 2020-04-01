@@ -60,7 +60,7 @@ public class NFA {
 				if(OR>=1)
 					push=1;
 				else {
-				begin = popStack(begin,OR,1);
+				begin = popStack(begin,OR,0);
 				OR = 0;
 				push = 0;
 				}
@@ -73,7 +73,7 @@ public class NFA {
 					push=1;
 				else
 				{
-				begin = popStack(begin,OR,1);
+				begin = popStack(begin,OR,0);
 				OR=0;
 				openB=0;
 				}
@@ -144,8 +144,10 @@ public class NFA {
 		temp=temp.replace("\\", "");
 		
 		for(int t=s;t<temp.length();t++) {
-		if(bracket == 0 && newNode==0) 
+		if(bracket == 0 && newNode==0) {
+			
 			startNode = nodeNum;
+		}
 		
 		newNode=0;
 		addN(temp.charAt(t));
@@ -169,7 +171,6 @@ public class NFA {
 		node[nodeNum]=new Node();
 		node[nodeNum].nameIt(nodeNum);
 		node[nodeNum].addArrow(exp);
-		
 		
 		node[nodeNum].addDefinition(regDef.getDefinition(exp),exp);
 		
