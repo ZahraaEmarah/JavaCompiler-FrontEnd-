@@ -3,7 +3,6 @@ public class TransitionTable {
 	Character[] inputs;
 	int index;
 	//array of epsilon transitions of each state 
-	
 	String[][] transition;
 	
 	public TransitionTable()
@@ -33,7 +32,7 @@ public class TransitionTable {
 	{
 		System.out.print("||STATE" + "||   ");
 		for(int i=0;i<index;i++)
-			System.out.print(inputs[i] + "  ");
+			System.out.print(inputs[i] +"  " );
 		System.out.println("");
 	}
 

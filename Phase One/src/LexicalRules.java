@@ -12,7 +12,7 @@ public class LexicalRules {
 	ArrayList<String> regDef = new ArrayList<String>();
 	ArrayList<String> keywords = new ArrayList<String>();
 	ArrayList<String> punctuations = new ArrayList<String>();
-	NFA nfa = new NFA();
+	NFA nfa ;
 	RegularDefinition regDefinition = new RegularDefinition();
 	
 	public void readFile() throws IOException
@@ -22,18 +22,19 @@ public class LexicalRules {
 		BufferedReader buffer = new BufferedReader(new FileReader(file));
 		String tempString = new String();
 		while ((tempString=buffer.readLine())!= null) {
-			if(tempString.contains(":"))
-				//This is an expression 
-				regExp.add(tempString);
-			else if (tempString.contains("="))
-				//this is a definition
-				regDef.add(tempString);
-			else if(tempString.startsWith("["))
+		   if(tempString.startsWith("["))
 				//handle the Punctuations
 				punctuations.add(tempString);
 			else if(tempString.startsWith("{")) 
 				//Handle the key words
 				keywords.add(tempString);
+			else if(tempString.contains(":"))
+				//This is an expression 
+				regExp.add(tempString);
+			else if (tempString.contains("="))
+				//this is a definition
+				regDef.add(tempString);
+			
 			}
 		//by having all the informations we can now build the NFA 
 		buildNFA();
@@ -55,6 +56,7 @@ public class LexicalRules {
 			regDefinition.name(temp2[0] , temp2[1]);
 		}
 		regDefinition.endNames();
+		nfa = new NFA(regDefinition);
 		for(int i=0;i<regExp.size();i++)
 		{
 			//split the expression when you see ":" 
@@ -62,9 +64,19 @@ public class LexicalRules {
 			String temp = regExp.get(i);
 			String[] temp2 = temp.split(":");
 			//build the NFA for this expression
+			if(temp2.length>2)
+			{
+				for(int j=2;j<temp2.length;j++) {
+					
+					temp2[1] = temp2[1]  + ':' + temp2[j];			
+				}
+			}
+			
 			temp2[1]=regDefinition.contain(temp2[1]);
 		    nfa.buildNFA(temp2);
 		}
+		
+		
 		//Add the keywords to the NFA
 		
 		for(int i=0;i<keywords.size();i++)

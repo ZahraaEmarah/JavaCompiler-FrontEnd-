@@ -7,4 +7,5 @@ public class main {
 		 LexicalRules lexicalRules = new LexicalRules();
 		 lexicalRules.readFile();
 	}
+	
 }

@@ -10,9 +10,10 @@ public class RegularDefinition {
 		int j=0;
 		while(true) {
 		if(!names.contains(Character.toString(Character.toUpperCase(exp.charAt(j))))) {
+			actualName = actualName.replace(" ","");
 			makeStringDef(actualName);
-			
 			names.add(Character.toString(Character.toUpperCase(exp.charAt(j))));
+			exp=exp.replace(" ", "");
 			actualNames.add(exp);
 			break;
 		}
@@ -39,8 +40,9 @@ public class RegularDefinition {
 				{
 					temp = removePlus(temp);
 				}
-				
+			
 				names.add(temp);
+				exp = exp.replace(" ", "");
 				actualNames.add(exp);
 				return;
 			}
@@ -73,12 +75,13 @@ public class RegularDefinition {
 	}
 	public void endNames() //end with epsilon
 	{
-		printDef();
+		//printDef();
 		names.add("~");
 		actualNames.add("\\L");
 	}
 	public String removePlus(String exp)
 	{
+		exp = exp.replace(" ", "");
 		int last=0;
 		if(exp.charAt(exp.length()-1) == '+') {
 			last=1;
@@ -109,7 +112,8 @@ public class RegularDefinition {
 	}
 	public String contain(String exp)
 	{
-		
+		if(exp.contains("E"))
+			exp = exp.replace("E", "^");
 		for(int i=actualNames.size()-1;i>-1;i--)
 		{
 			if(exp.contains(actualNames.get(i)))
@@ -125,7 +129,23 @@ public class RegularDefinition {
 			
 		    exp = removePlus(exp);
 		}
+		//remove the exponent to be (^)
+		
 		return exp;
+	}
+	public String getDefinition(Character letter)
+	{
+		
+		String temp ="";
+		
+		if(letter == '~')
+			return temp;
+		for(int i=0;i<actualNames.size();i++)
+		{	
+			if(names.get(i).charAt(0) == letter) 
+				return definitions.get(i);
+		}
+		return temp;
 	}
 
 }
