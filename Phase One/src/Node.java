@@ -88,8 +88,6 @@ public class Node {
 			return;
 		add = letter + add;
 		regularDefinition.add(add);
-		
-		
 	}
 	public void removeDefinition()
 	{
@@ -99,13 +97,15 @@ public class Node {
 		
 		for(int i=0;i<index;i++)
 		{
-			if(regularDefinition.contains(Character.toString(value[index])))
+			if(regularDefinition.contains(Character.toString(value[index])) )
 			{
 				for(int j=0;j<regularDefinition.size();j++)
 				{
+					if(!regularDefinition.get(j).startsWith(Character.toString(value[index]))) {		
 					String temp = regularDefinition.get(j);
 					temp = temp.replace(Character.toString(value[index]), "");
 					regularDefinition.set(j, temp);
+				    }
 				}
 			}
 		}
