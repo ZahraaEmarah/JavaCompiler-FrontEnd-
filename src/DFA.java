@@ -67,8 +67,8 @@ public class DFA {
 			epsilon_closure[i] = remove_white_space(temp);
 		}
 		/**
-		 * for (int k = 0; k < epsilon_closure.length; k++) { System.out.println();
-		 * System.out.println(k + " epsilon is " + epsilon_closure[k]); }
+		 for (int k = 0; k < epsilon_closure.length; k++) { System.out.println();
+		  System.out.println(k + " epsilon is " + epsilon_closure[k]); }
 		 **/
 
 		construct_DFA_table(epsilon_closure[0]);
@@ -118,7 +118,7 @@ public class DFA {
 	}
 
 	private void construct_DFA_table(String state) {
-		System.out.println("state: " + state + " Entered");
+		//System.out.println("state: " + state + " Entered");
 		row = new ArrayList<String>();
 		DFA_states.add(state);
 		String[] states = state.split(",");
@@ -138,7 +138,7 @@ public class DFA {
 			tmp = j + "-" + link.toString();
 			Construct_output_row(tmp);
 		}
-		System.out.println("Row: " + row + "\n");
+		//System.out.println("Row: " + row + "\n");
 
 		for (String a : row) {
 			if (!q.contains(a)) {
@@ -147,14 +147,13 @@ public class DFA {
 		}
 
 		DFA.add(row);
-		System.out.println("Queue: " + q);
-		System.out.println("List of states: " + DFA_states);
+		//System.out.println("Queue: " + q);
+		//System.out.println("List of states: " + DFA_states);
 
 		while (!q.isEmpty() && (q.peek().equals("E") || DFA_states.contains(q.peek())))
 			q.poll();
 		if (!q.isEmpty())
 			construct_DFA_table(q.poll());
-
 	}
 
 	private void Construct_output_row(String linker) {
