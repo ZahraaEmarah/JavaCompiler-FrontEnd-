@@ -1,9 +1,9 @@
+import java.util.ArrayList;
 
 public class Node {
 	Node[] next; //Directed , and it may have several next states
 	Character[] value; //Value on the arrow 
 	int index;
-	
 	//each node I am directed to should have a value on it's arrow
 	//next[0] ---> the value on the arrow is value[0] next[0] = node[1]
 	//next[1] ---> the value on the arrow is value[1] and so on  
@@ -11,7 +11,8 @@ public class Node {
 	 int name ; //we name the nodes by numbers by incrementing this variable
 	 String langName; //in the finish state there will be a name for the language
 	 int inputsTable[][];
-	
+	 ArrayList<String> regularDefinition = new ArrayList<String>(); 
+	 
 	//[0] next --> NODE[1] 
 	 //   value ARROW 0 --> ~  
 	public Node()
@@ -80,4 +81,36 @@ public class Node {
 		return inputsTable[i][j];
 		
 	}
+	
+	public void addDefinition(String add , Character letter)
+	{
+		
+		//add Definition and add the letter which is the symbol of the expression definition 
+		if(add == "")
+			return;
+		add = letter + add;
+		regularDefinition.add(add);
+		
+	}
+	
+	public void removeDefinition()
+	{
+		//removes the occurence of similar definitions
+		//L-'any other letter that happens in this node (arrow)'
+		//D-'any other number that occurs in this node(arrow)'
+		
+		for(int i=0;i<index;i++)
+		{
+			if(regularDefinition.contains(Character.toString(value[index])))
+			{
+				for(int j=0;j<regularDefinition.size();j++)
+				{
+					String temp = regularDefinition.get(j);
+					temp = temp.replace(Character.toString(value[index]), "");
+					regularDefinition.set(j, temp);
+				}
+			}
+		}
+	}
+	
 }

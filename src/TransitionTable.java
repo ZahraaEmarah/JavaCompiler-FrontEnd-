@@ -33,7 +33,7 @@ public class TransitionTable {
 	{
 		System.out.print("||STATE" + "||   ");
 		for(int i=0;i<index;i++)
-			System.out.print(inputs[i] + " \t");
+			System.out.print(inputs[i] + " ");
 		System.out.println("");
 	}
 

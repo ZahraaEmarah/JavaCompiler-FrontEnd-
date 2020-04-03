@@ -12,6 +12,7 @@ public class NFA {
 	//these two integers are used for STAR
 	int startNode;
 	int finishNode;
+	RegularDefinition regDef;
 	
 	//int dontStart;
 	//after adding all regular expressions to the Arraylist in LexicalRules
@@ -20,8 +21,9 @@ public class NFA {
 	//but for each regular expression there will be a finish node(end node)
 	//epsilon is represented by "~"
 	
-	public NFA()
+	public NFA(RegularDefinition regDef)
 	{
+		this.regDef = regDef;
 		nodeNum=1;
 		node = new Node[200];
 		node[0] = new Node();
@@ -33,6 +35,7 @@ public class NFA {
 	public void buildNFA(String[] expression)
 	{
 		    num = nodeNum;
+		    expression[1] = expression[1].replace(" ", "");
 			handleAll(expression[1]);
 			addFinalNode(expression[0],1);
 			nodeNum++;
@@ -57,7 +60,7 @@ public class NFA {
 				if(OR>=1)
 					push=1;
 				else {
-				begin = popStack(begin,OR,1);
+				begin = popStack(begin,OR,0);
 				OR = 0;
 				push = 0;
 				}
@@ -70,7 +73,7 @@ public class NFA {
 					push=1;
 				else
 				{
-				begin = popStack(begin,OR,1);
+				begin = popStack(begin,OR,0);
 				OR=0;
 				openB=0;
 				}
@@ -118,8 +121,6 @@ public class NFA {
 			s=1;
 		}
 			
-		
-		
 		startNode = nodeNum;
 		if(OR >= 1)
 		{
@@ -130,6 +131,7 @@ public class NFA {
 			return 1;
 		}
 		int newNode=0;
+		temp=temp.replace("\\", "");
 		if(begin == 0)
 		{
 			begin=1;
@@ -139,9 +141,12 @@ public class NFA {
 			newNode=1;
 		}
 		finishNode = nodeNum;
+		temp=temp.replace("\\", "");
+		
 		for(int t=s;t<temp.length();t++) {
 		if(bracket == 0 && newNode==0) 
 			startNode = nodeNum;
+		
 		newNode=0;
 		addN(temp.charAt(t));
 		finishNode = nodeNum;
@@ -164,6 +169,10 @@ public class NFA {
 		node[nodeNum]=new Node();
 		node[nodeNum].nameIt(nodeNum);
 		node[nodeNum].addArrow(exp);
+		
+		
+		node[nodeNum].addDefinition(regDef.getDefinition(exp),exp);
+		
 		Node temp = node[nodeNum++];
 		node[nodeNum] = temp.getNext();
 	}
@@ -192,7 +201,7 @@ public class NFA {
 		String[] divide = exp.split("\\|");
 		node[start].index--;
 		int star;
-		System.out.println(exp);
+		
 		for(int i=0;i<divide.length ; i++)
 		{
 			String[] save = divide ;
@@ -334,7 +343,7 @@ public class NFA {
 		table.buildTable(node, nodeNum);
 		table.printInputLine();
 		for(int i1=0;i1<nodeNum;i1++) {
-		System.out.print("||"+i1+"||      ");
+		System.out.print("||"+i1+" -- " + node[i1].langName + "||      ");
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
 		
