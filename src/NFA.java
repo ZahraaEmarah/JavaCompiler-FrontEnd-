@@ -338,16 +338,16 @@ public class NFA {
 	
 	public void printTransTable()
 	{
-		
+		Character[] inputs;
 		table.endInput();
 		table.buildTable(node, nodeNum);
-		table.printInputLine();
+		inputs = table.printInputLine();
 		for(int i1=0;i1<nodeNum;i1++) {
 		System.out.print("||"+i1+" -- " + node[i1].langName + "||      ");
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
 		
-		dfa = new DFA(node, nodeNum, table.index);	
+		dfa = new DFA(node, nodeNum, table.index, inputs);	
 		dfa.Parse_NFA(nodeNum, table.index);
 		
 	}

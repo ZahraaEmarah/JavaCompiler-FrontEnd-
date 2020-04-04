@@ -12,6 +12,7 @@ public class DFA {
 	Node[] nodes;
 	int count = 0;
 	int s_counter = 0;
+	Character[] inputs;
 	int inner_loop = 0;
 	int[][] count_table;
 	DFA_minimization min;
@@ -25,10 +26,11 @@ public class DFA {
 	ArrayList<ArrayList<String>> DFA = new ArrayList<ArrayList<String>>();
 
 
-	public DFA(Node[] nodes, int rows, int column) {
+	public DFA(Node[] nodes, int rows, int column, Character[] inputs) {
 		this.nodes = nodes;
 		this.rows = rows;
 		this.column = column;
+		this.inputs = inputs;
 	}
 
 	public void Parse_NFA(int node_num, int inputs_num) {
@@ -57,7 +59,6 @@ public class DFA {
 		}
 		epsilon_closure(count_table);
 		Append_Empty_state();
-		//print_DFA(DFA);
 		finalize_DFA();
 		print_DFA(DFA);
 	}
@@ -134,16 +135,18 @@ public class DFA {
 		StringBuilder link;
 		String tmp;
 		int is_finish = 0;
+		String lang = " ";
 
 		for (String a : states) {
 			if (nodes[Integer.parseInt(a)].finishState) {
 				is_finish = 1;
+				lang = nodes[Integer.parseInt(a)].langName;
 			}
 		}
 
 		if (is_finish == 1) {
 			is_finish = 0;
-			finish.add("*");
+			finish.add(lang);
 		} else {
 			finish.add(" ");
 		}
@@ -211,6 +214,7 @@ public class DFA {
 	}
 
 	private void print_DFA(ArrayList<ArrayList<String>> DFA) {
+	/**	System.out.println();
 		System.out.println();
 		for (int i = 0; i < DFA.size(); i++) {
 			System.out.print("||" + finish.get(i) + " " + DFA_states.get(i) + "|| ");
@@ -218,14 +222,14 @@ public class DFA {
 				System.out.print(DFA.get(i).get(j) + "  ");
 			}
 			System.out.println();
-		}
-		min = new DFA_minimization(DFA_states, DFA, finish);
+		}**/
+		min = new DFA_minimization(DFA_states, DFA, finish, inputs);
 		min.zero_equivalence();
 	}
 
 	private void Append_Empty_state() {
 		DFA_states.add("E");
-		finish.add("*");
+		finish.add(" ");
 		row = new ArrayList<String>();
 		for (int i = 0; i < column - 1; i++) {
 			row.add("E");

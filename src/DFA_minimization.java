@@ -2,24 +2,28 @@ import java.util.*;
 
 public class DFA_minimization {
 
+	Character[] inputs;
 	ArrayList<String> entry;
 	ArrayList<String> states = new ArrayList<String>();
 	ArrayList<String> finish = new ArrayList<String>();
+	ArrayList<Character> in;
 	ArrayList<ArrayList<String>> DFA = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> P = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> Pk = new ArrayList<ArrayList<String>>();
 
-	public DFA_minimization(ArrayList<String> states, ArrayList<ArrayList<String>> DFA, ArrayList<String> finish) {
+	public DFA_minimization(ArrayList<String> states, ArrayList<ArrayList<String>> DFA, ArrayList<String> finish, Character[] inputs) {
 		this.states = states;
 		this.DFA = DFA;
 		this.finish = finish;
+		this.inputs = inputs;
+		in = new ArrayList<Character>(Arrays.asList(inputs));
 	}
 
 	public void zero_equivalence() {
 		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
-			if (finish.get(i).contains("*")){
+			if (!finish.get(i).equals(" ")){
 				entry.add(states.get(i));
 				}
 		}
@@ -27,7 +31,7 @@ public class DFA_minimization {
 		
 		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
-			if (!(finish.get(i).contains("*")))
+			if ((finish.get(i).equals(" ")))
 				entry.add(states.get(i));
 		}
 		P.add(entry);
@@ -40,8 +44,6 @@ public class DFA_minimization {
 		Pk = new ArrayList<ArrayList<String>>();
 		temp = new ArrayList<ArrayList<String>>();
 		temp = deep_copy(P);
-		//System.out.println(temp);
-		//System.out.println(P);
 		
 		for (int i = 0; i < P.size(); i++) { // first set
 			for (int j = 0; j < P.get(i).size(); j++) { // first element
@@ -50,8 +52,6 @@ public class DFA_minimization {
 				entry = new ArrayList<String>();
 				entry.add(first);
 				P.get(i).remove(j);	
-				//System.out.println(temp);
-				//System.out.println(P);
 				
                for(int k=0; k< P.get(i).size(); k++) {
             	   String second = P.get(i).get(k);     
@@ -67,11 +67,7 @@ public class DFA_minimization {
 			}
 		}	
         
-		//System.out.println(temp);
-		//System.out.println(Pk);
 		temp.removeAll(Pk);
-		//System.out.println(temp);
-		System.out.println(Pk);
 		
 		if(!temp.isEmpty())
 			N_equivalence(Pk);
@@ -84,24 +80,20 @@ public class DFA_minimization {
 		int state1 = Integer.parseInt(one);
 		int state2 = Integer.parseInt(two);
 		
-		//System.out.println(DFA.get(state1));
-		//System.out.println(DFA.get(state2));
-		
 		for(int i=0; i<DFA.get(0).size(); i++)
 		{
 			for(int j=0; j<P.size(); j++)
 			{
-				//System.out.println(DFA.get(state1).get(i));
-				//System.out.println(DFA.get(state2).get(i));
-				//System.out.println(P.get(j));
 				if(P.get(j).contains(DFA.get(state1).get(i)))
 				{
 					if(!(P.get(j).contains(DFA.get(state2).get(i))))
 						return false;
-					break;
+				}
+				if(!(finish.get(state1).equals(finish.get(state2))))
+				{
+					return false;
 				}
 			}
-			
 		}		
 		return true;
 	}
@@ -149,14 +141,30 @@ public class DFA_minimization {
 	}
 
 	private void print_min_DFA() {
-		System.out.println();
+		System.out.println("\n\n*** Minimized DFA ***");
+		System.out.println(in);
 		for (int i = 0; i < Pk.size(); i++) {
-			System.out.print(Pk.get(i).get(0) + finish.get(Integer.parseInt(Pk.get(i).get(0))) + " -- > ");
+			System.out.print(Pk.get(i).get(0) +"  " +  finish.get(Integer.parseInt(Pk.get(i).get(0))) + " -- > ");
 			for(int j=0; j< DFA.get(i).size(); j++) {
 			System.out.print(DFA.get(Integer.parseInt(Pk.get(i).get(0))).get(j) + " ");
 			}
-			
 			System.out.println();
 		}
+		
+		String[] get = new String[2];
+		get = get_dfa("0", '=');
+		System.out.println(get[0]);
+		System.out.println(get[1]);
+		
+	}
+	
+	public String[] get_dfa(String start_state, Character ch) // returns lang name or " "
+	{ 
+       int index = in.indexOf(ch);
+       String[] ret = new String[2];
+       ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
+       ret[1] = finish.get(Integer.parseInt(ret[0]));
+       
+       return ret;
 	}
 }

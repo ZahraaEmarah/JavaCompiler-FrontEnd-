@@ -65,6 +65,7 @@ public class Node {
 				inputsTable[i][j] = -1;
 		}
 	}
+	
 	public void addInput(int i , int j,int node)
 	{
 		int k=0;
@@ -79,18 +80,15 @@ public class Node {
 	public int getInput(int i , int j)
 	{
 		return inputsTable[i][j];
-		
 	}
 	
 	public void addDefinition(String add , Character letter)
-	{
-		
+	{	
 		//add Definition and add the letter which is the symbol of the expression definition 
 		if(add == "")
 			return;
 		add = letter + add;
-		regularDefinition.add(add);
-		
+		regularDefinition.add(add);	
 	}
 	
 	public void removeDefinition()
