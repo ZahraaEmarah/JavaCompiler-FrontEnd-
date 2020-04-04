@@ -65,6 +65,7 @@ public class Node {
 				inputsTable[i][j] = -1;
 		}
 	}
+	
 	public void addInput(int i , int j,int node)
 	{
 		int k=0;
@@ -79,16 +80,17 @@ public class Node {
 	public int getInput(int i , int j)
 	{
 		return inputsTable[i][j];
-		
 	}
+	
 	public void addDefinition(String add , Character letter)
-	{
+	{	
 		//add Definition and add the letter which is the symbol of the expression definition 
 		if(add == "")
 			return;
 		add = letter + add;
-		regularDefinition.add(add);
+		regularDefinition.add(add);	
 	}
+	
 	public void removeDefinition()
 	{
 		//removes the occurence of similar definitions
@@ -97,18 +99,15 @@ public class Node {
 		
 		for(int i=0;i<index;i++)
 		{
-			if(regularDefinition.contains(Character.toString(value[index])) )
+			if(regularDefinition.contains(Character.toString(value[index])))
 			{
 				for(int j=0;j<regularDefinition.size();j++)
 				{
-					if(!regularDefinition.get(j).startsWith(Character.toString(value[index]))) {		
 					String temp = regularDefinition.get(j);
 					temp = temp.replace(Character.toString(value[index]), "");
 					regularDefinition.set(j, temp);
-				    }
 				}
 			}
 		}
 	}
-	
 }

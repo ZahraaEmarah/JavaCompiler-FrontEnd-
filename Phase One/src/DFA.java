@@ -1,30 +1,39 @@
-
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 public class DFA {
 
-	Node[] nodes;
-	ArrayList<ArrayList<String>> DFA = new ArrayList<ArrayList<String>>();
-	ArrayList<String> row;
-	ArrayList<String> DFA_states = new ArrayList<String>();
-	ArrayList<String> arr = new ArrayList<String>();
-	Queue<String> q = new LinkedList<>();
-	String[] epsilon_closure;
-	int count = 0;
-	int[][] count_table;
-	int column;
 	int rows;
+	int column;
 	String START;
-	int first_time_flag = 0;
+	Node[] nodes;
+	int count = 0;
+	int s_counter = 0;
+	Character[] inputs;
 	int inner_loop = 0;
+	int[][] count_table;
+	DFA_minimization min;
+	ArrayList<String> row;
+	int first_time_flag = 0;
+	String[] epsilon_closure;
+	Queue<String> q = new LinkedList<>();
+	ArrayList<String> arr = new ArrayList<String>();
+	ArrayList<String> finish = new ArrayList<String>();
+	ArrayList<String> DFA_states = new ArrayList<String>();
+	ArrayList<ArrayList<String>> DFA = new ArrayList<ArrayList<String>>();
+	RegularDefinition regDef;
 
-	public DFA(Node[] nodes, int rows, int column) {
+
+	public DFA(Node[] nodes, int rows, int column, Character[] inputs,RegularDefinition regDef) {
 		this.nodes = nodes;
 		this.rows = rows;
 		this.column = column;
+		this.inputs = inputs;
+		this.regDef = regDef;
 	}
 
 	public void Parse_NFA(int node_num, int inputs_num) {
@@ -51,9 +60,9 @@ public class DFA {
 				count = 0;
 			}
 		}
-
 		epsilon_closure(count_table);
 		Append_Empty_state();
+		finalize_DFA();
 		print_DFA(DFA);
 	}
 
@@ -67,21 +76,19 @@ public class DFA {
 			temp = closure(i, count_table);
 			epsilon_closure[i] = remove_white_space(temp);
 		}
-		/**
-		 for (int k = 0; k < epsilon_closure.length; k++) { System.out.println();
-		  System.out.println(k + " epsilon is " + epsilon_closure[k]); }
-		 **/
+		// for (int k = 0; k < epsilon_closure.length; k++) { System.out.println();
+		// System.out.println(k + " epsilon is " + epsilon_closure[k]); }
 
-		construct_DFA_table(epsilon_closure[0]);
+		construct_DFA_table(epsilon_closure[0], count_table);
+
 	}
 
 	private String closure(int start, int c[][]) {
 
 		if (start == -1)
 			return "-1";
-		String str = Integer.toString(start);
-		
 
+		String str = Integer.toString(start);
 		if (arr.contains(Integer.toString(start))) {
 			if (inner_loop == 1) {
 				inner_loop = 0;
@@ -112,6 +119,10 @@ public class DFA {
 	private String remove_white_space(String string) {
 		String[] val = string.split(",");
 		String ret = "";
+		// remove duplicates //
+		LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>(Arrays.asList(val));
+		val = linkedHashSet.toArray(new String[] {});
+		// remove extra characters //
 		for (String a : val)
 			if (!(a.equals("-1"))) {
 				ret = ret + a + ",";
@@ -119,28 +130,45 @@ public class DFA {
 		return ret;
 	}
 
-	private void construct_DFA_table(String state) {
-		//System.out.println("state: " + state + " Entered");
+	private void construct_DFA_table(String state, int count_table[][]) {
+
 		row = new ArrayList<String>();
 		DFA_states.add(state);
 		String[] states = state.split(",");
 		StringBuilder link;
 		String tmp;
+		int is_finish = 0;
+		String lang = " ";
+
+		for (String a : states) {
+			if (nodes[Integer.parseInt(a)].finishState) {
+				is_finish = 1;
+				lang = nodes[Integer.parseInt(a)].langName;
+			}
+		}
+
+		if (is_finish == 1) {
+			is_finish = 0;
+			finish.add(lang);
+		} else {
+			finish.add(" ");
+		}
 
 		for (int j = 0; j < column - 1; j++) {
 
 			link = new StringBuilder();
 			for (int i = 0; i < states.length; i++) {
-				int out = nodes[Integer.parseInt(states[i])].getInput(j, 0); /////// BEWARE: NEEDS ADJUST
-				if (out != -1) {
-					link.append(epsilon_closure[out]);
-					//link.append(",");
+				for (int k = 0; k < count_table[i][j]; k++) {
+					int out = nodes[Integer.parseInt(states[i])].getInput(j, k);
+					if (out != -1) {
+						link.append(epsilon_closure[out]);
+					}
 				}
 			}
+
 			tmp = j + "-" + link.toString();
 			Construct_output_row(tmp);
 		}
-		//System.out.println("Row: " + row + "\n");
 
 		for (String a : row) {
 			if (!q.contains(a)) {
@@ -149,20 +177,18 @@ public class DFA {
 		}
 
 		DFA.add(row);
-		//System.out.println("Queue: " + q);
-		//System.out.println("List of states: " + DFA_states);
 
 		while (!q.isEmpty() && (q.peek().equals("E") || DFA_states.contains(q.peek())))
 			q.poll();
 		if (!q.isEmpty())
-			construct_DFA_table(q.poll());
+			construct_DFA_table(q.poll(), count_table);
 	}
 
 	private void Construct_output_row(String linker) {
 		String[] link = linker.split("-");
 		int index = Integer.parseInt(link[0]);
 		StringBuilder s = new StringBuilder();
-		;
+
 		if (link.length > 1) {
 			String[] val = link[1].split(",");
 			for (String a : val) {
@@ -175,18 +201,44 @@ public class DFA {
 		row.add(s.toString());
 	}
 
+	private void finalize_DFA() {
+		for (int i = 0; i < DFA_states.size(); i++) {
+			String s1 = DFA_states.get(i).replaceAll(" ", "");
+			for (int j = 0; j < DFA_states.size(); j++) {
+				for (int k = 0; k < DFA.get(i).size(); k++) {
+					String s2 = DFA.get(j).get(k).replaceAll(" ", "");
+					if (s2.equals(s1))
+						DFA.get(j).set(k, Integer.toString(s_counter));
+				}
+			}
+			DFA_states.set(i, Integer.toString(s_counter));
+			s_counter++;
+		}
+	}
+
 	private void print_DFA(ArrayList<ArrayList<String>> DFA) {
+	/**	System.out.println();
+		System.out.println();
 		for (int i = 0; i < DFA.size(); i++) {
-			System.out.print("|| " + DFA_states.get(i) + "\t|| ");
+			System.out.print("||" + finish.get(i) + " " + DFA_states.get(i) + "|| ");
 			for (int j = 0; j < DFA.get(i).size(); j++) {
-				System.out.print(DFA.get(i).get(j) + " ");
+				System.out.print(DFA.get(i).get(j) + "  ");
 			}
 			System.out.println();
+		}**/
+		min = new DFA_minimization(DFA_states, DFA, finish, inputs,regDef);
+		min.zero_equivalence();
+		try {
+			ReadProgram read = new ReadProgram(min);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	private void Append_Empty_state() {
 		DFA_states.add("E");
+		finish.add("dead");
 		row = new ArrayList<String>();
 		for (int i = 0; i < column - 1; i++) {
 			row.add("E");

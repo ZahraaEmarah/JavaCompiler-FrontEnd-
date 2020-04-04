@@ -73,7 +73,7 @@ public class NFA {
 					push=1;
 				else
 				{
-				begin = popStack(begin,OR,1);
+				begin = popStack(begin,OR,0);
 				OR=0;
 				openB=0;
 				}
@@ -144,10 +144,8 @@ public class NFA {
 		temp=temp.replace("\\", "");
 		
 		for(int t=s;t<temp.length();t++) {
-		if(bracket == 0 && newNode==0) {
-			
+		if(bracket == 0 && newNode==0) 
 			startNode = nodeNum;
-		}
 		
 		newNode=0;
 		addN(temp.charAt(t));
@@ -171,6 +169,7 @@ public class NFA {
 		node[nodeNum]=new Node();
 		node[nodeNum].nameIt(nodeNum);
 		node[nodeNum].addArrow(exp);
+		
 		
 		node[nodeNum].addDefinition(regDef.getDefinition(exp),exp);
 		
@@ -339,16 +338,16 @@ public class NFA {
 	
 	public void printTransTable()
 	{
-		
+		Character[] inputs;
 		table.endInput();
 		table.buildTable(node, nodeNum);
-		table.printInputLine();
+		inputs = table.printInputLine();
 		for(int i1=0;i1<nodeNum;i1++) {
-		System.out.print("||"+i1+"||      ");
+		System.out.print("||"+i1+" -- " + node[i1].langName + "||      ");
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
 		
-		dfa = new DFA(node, nodeNum, table.index);	
+		dfa = new DFA(node, nodeNum, table.index, inputs,regDef);	
 		dfa.Parse_NFA(nodeNum, table.index);
 		
 	}
