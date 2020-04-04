@@ -23,7 +23,7 @@ public class DFA_minimization {
 	public void zero_equivalence() {
 		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
-			if (!finish.get(i).equals(" ")){
+			if (!(finish.get(i).equals(" "))){
 				entry.add(states.get(i));
 				}
 		}
@@ -44,7 +44,7 @@ public class DFA_minimization {
 		Pk = new ArrayList<ArrayList<String>>();
 		temp = new ArrayList<ArrayList<String>>();
 		temp = deep_copy(P);
-		
+				
 		for (int i = 0; i < P.size(); i++) { // first set
 			for (int j = 0; j < P.get(i).size(); j++) { // first element
 				
@@ -164,6 +164,7 @@ public class DFA_minimization {
        String[] ret = new String[2];
        ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
        ret[1] = finish.get(Integer.parseInt(ret[0]));
+       
        
        return ret;
 	}

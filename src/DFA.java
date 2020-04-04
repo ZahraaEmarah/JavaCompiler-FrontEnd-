@@ -229,7 +229,7 @@ public class DFA {
 
 	private void Append_Empty_state() {
 		DFA_states.add("E");
-		finish.add(" ");
+		finish.add("dead");
 		row = new ArrayList<String>();
 		for (int i = 0; i < column - 1; i++) {
 			row.add("E");
