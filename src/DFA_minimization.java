@@ -17,13 +17,13 @@ public class DFA_minimization {
 	}
 
 	public void zero_equivalence() {
+		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
-			entry = new ArrayList<String>();
 			if (finish.get(i).contains("*")){
 				entry.add(states.get(i));
-				P.add(entry);
 				}
-			}
+		}
+		P.add(entry);
 		
 		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
@@ -55,7 +55,7 @@ public class DFA_minimization {
 				
                for(int k=0; k< P.get(i).size(); k++) {
             	   String second = P.get(i).get(k);     
-            	   if(is_equivalent(first,second,P)){ 
+            	   if(is_equivalent(first,second,temp)){ 
             		   entry.add(P.get(i).get(k));
             		   P.get(i).remove(k);
             		   k--;
