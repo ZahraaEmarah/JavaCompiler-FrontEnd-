@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class LexicalRules {
 	
 	ArrayList<String> regExp = new ArrayList<String>();
-	ArrayList<String> regDef = new ArrayList<String>();
+	ArrayList<String> regDef = new ArrayList<String>(); 
 	ArrayList<String> keywords = new ArrayList<String>();
 	ArrayList<String> punctuations = new ArrayList<String>();
 	NFA nfa ;
@@ -41,9 +41,9 @@ public class LexicalRules {
 		}
 	private void buildNFA()
 	{
-		System.out.println("Building the NFA...");
 		
-		//start node is comon to all the expressions
+		
+		//start node is common to all the expressions
 		//loop on all the expressions in the array list , build each NFA with same start 
 		//Split the expressions 
 		for(int i = 0 ; i<regDef.size();i++)

@@ -18,14 +18,14 @@ decop
 while
 id
 relop
-floatNum
+num
 do
 begin
 id
 assign
 id
 addop
-floatNum
+num
 ;
 read
 (
@@ -35,7 +35,7 @@ id
 if
 id
 relop
-floatNum
+num
 then
 id
 assign

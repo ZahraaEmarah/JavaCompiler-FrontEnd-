@@ -17,7 +17,7 @@ public class Node {
 	 //   value ARROW 0 --> ~  
 	public Node()
 	{
-		this.finishState = false;
+		this.finishState = false; 
 		next = new Node[200];
 		value = new Character[200];
 		index=0;
@@ -82,32 +82,7 @@ public class Node {
 		return inputsTable[i][j];
 	}
 	
-	public void addDefinition(String add , Character letter)
-	{	
-		//add Definition and add the letter which is the symbol of the expression definition 
-		if(add == "")
-			return;
-		add = letter + add;
-		regularDefinition.add(add);	
-	}
 	
-	public void removeDefinition()
-	{
-		//removes the occurence of similar definitions
-		//L-'any other letter that happens in this node (arrow)'
-		//D-'any other number that occurs in this node(arrow)'
-		
-		for(int i=0;i<index;i++)
-		{
-			if(regularDefinition.contains(Character.toString(value[index])))
-			{
-				for(int j=0;j<regularDefinition.size();j++)
-				{
-					String temp = regularDefinition.get(j);
-					temp = temp.replace(Character.toString(value[index]), "");
-					regularDefinition.set(j, temp);
-				}
-			}
-		}
-	}
+	
+	
 }

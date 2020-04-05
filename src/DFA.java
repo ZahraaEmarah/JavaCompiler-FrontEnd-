@@ -144,6 +144,7 @@ public class DFA {
 			if (nodes[Integer.parseInt(a)].finishState) {
 				is_finish = 1;
 				lang = nodes[Integer.parseInt(a)].langName;
+				break;
 			}
 		}
 
@@ -228,6 +229,7 @@ public class DFA {
 		}**/
 		min = new DFA_minimization(DFA_states, DFA, finish, inputs,regDef);
 		min.zero_equivalence();
+		//start reading the program after making the DFA minimized 
 		try {
 			ReadProgram read = new ReadProgram(min);
 		} catch (IOException e) {

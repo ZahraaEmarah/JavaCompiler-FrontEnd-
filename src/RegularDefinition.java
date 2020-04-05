@@ -11,7 +11,7 @@ public class RegularDefinition {
 		while(true) {
 		if(!names.contains(Character.toString(Character.toUpperCase(exp.charAt(j))))) {
 			actualName = actualName.replace(" ","");
-			makeStringDef(actualName);
+			makeStringDef(actualName); 
 			names.add(Character.toString(Character.toUpperCase(exp.charAt(j))));
 			exp=exp.replace(" ", "");
 			actualNames.add(exp);
@@ -67,12 +67,7 @@ public class RegularDefinition {
 		}
 		definitions.add(add);
 	}
-	public void printDef()
-	{
-		int i=0;
-		for(i=0;i<definitions.size();i++)
-			System.out.println(definitions.get(i));
-	}
+	
 	public void endNames() //end with epsilon
 	{
 		//printDef();

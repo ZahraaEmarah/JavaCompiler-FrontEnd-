@@ -17,11 +17,12 @@ public class DFA_minimization {
 		this.states = states;
 		this.DFA = DFA;
 		this.finish = finish;
+		
 		this.inputs = inputs;
 		in = new ArrayList<Character>(Arrays.asList(inputs));
 		this.regDef = regDef;
 	}
-
+   
 	public void zero_equivalence() {
 		entry = new ArrayList<String>();
 		for (int i = 0; i < states.size(); i++) {
@@ -161,18 +162,17 @@ public class DFA_minimization {
 	{ 
 		
 	   String[] ret = new String[2];
-	   ret[0] = "0";
+	   ret[0] = "0";//starts at the beginning node(0)
 	   ret[1] = "";
 	   
 	   
        if(in.contains(ch) == false || checkRegDef == 1) { 
     	   // we need to check the regular expressions if the input is unique
-    	 //  System.out.println("Check other options"); //D or L
-    	  
-    	    ch = check_reg_def(ch);
-    	    
-    	    if(ch == ' ')
+     	    ch = check_reg_def(ch); 	    
+    	    if(ch == ' ') {
+    	    	ret[1] = "error";
     	    	return ret;
+    	    }
        }
        
        int index = in.indexOf(ch);
@@ -180,14 +180,12 @@ public class DFA_minimization {
        ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
        ret[1] = finish.get(Integer.parseInt(ret[0]));
        //if the finish state is dead end then check the regular definitions
-       
        if(ret[1] == "dead")
        {
-    	   
     	   ch = check_reg_def(ch);
-    	   if(ch == ' ')
+    	   if(ch == ' ') //no other choice then return with the dead state 
     		   return ret; 
-       
+       //else continue with the regular definition found 
        index = in.indexOf(ch);
        ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
        ret[1] = finish.get(Integer.parseInt(ret[0]));
@@ -196,11 +194,11 @@ public class DFA_minimization {
        return ret ;
        
 	}
-	public Character check_reg_def(Character ch)
+	public Character check_reg_def(Character ch)  
 	{
-		
+		//this function returns the equivalent regular definition to an input character
 		for(int i=0;i<regDef.names.size() ; i++) {
-			String t=regDef.getDefinition(regDef.names.get(i).charAt(0));
+		String t=regDef.getDefinition(regDef.names.get(i).charAt(0));
 		if(t.contains(Character.toString(ch)) == true )
 		{
 			
