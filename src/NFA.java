@@ -347,7 +347,7 @@ public class NFA {
 	    table.printTransitionTable(node[i1],nodeNum);
 		}
 		
-		dfa = new DFA(node, nodeNum, table.index, inputs);	
+		dfa = new DFA(node, nodeNum, table.index, inputs,regDef);	
 		dfa.Parse_NFA(nodeNum, table.index);
 		
 	}

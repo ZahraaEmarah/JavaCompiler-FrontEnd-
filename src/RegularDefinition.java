@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class RegularDefinition {
 	private ArrayList<String> definitions = new ArrayList<String>();
-	private ArrayList<String> names = new ArrayList<String>();
+	 ArrayList<String> names = new ArrayList<String>();
 	private ArrayList<String> actualNames = new ArrayList<String>();
 	
 	public void name(String exp,String actualName)
@@ -59,7 +59,7 @@ public class RegularDefinition {
 		String[] parse = temp[i].split("-");
 		int start = parse[0].charAt(0);
 		int end = parse[parse.length-1].charAt(0);
-	    for(int j=start;j<end;j++)
+	    for(int j=start;j<=end;j++)
 	    {
 	    	add = add + (char)j;
 	    }

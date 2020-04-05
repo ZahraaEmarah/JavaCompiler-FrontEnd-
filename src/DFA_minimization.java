@@ -11,13 +11,15 @@ public class DFA_minimization {
 	ArrayList<ArrayList<String>> P = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
 	ArrayList<ArrayList<String>> Pk = new ArrayList<ArrayList<String>>();
+	RegularDefinition regDef ;
 
-	public DFA_minimization(ArrayList<String> states, ArrayList<ArrayList<String>> DFA, ArrayList<String> finish, Character[] inputs) {
+	public DFA_minimization(ArrayList<String> states, ArrayList<ArrayList<String>> DFA, ArrayList<String> finish, Character[] inputs, RegularDefinition regDef) {
 		this.states = states;
 		this.DFA = DFA;
 		this.finish = finish;
 		this.inputs = inputs;
 		in = new ArrayList<Character>(Arrays.asList(inputs));
+		this.regDef = regDef;
 	}
 
 	public void zero_equivalence() {
@@ -151,21 +153,62 @@ public class DFA_minimization {
 			System.out.println();
 		}
 		
-		String[] get = new String[2];
-		get = get_dfa("0", '=');
-		System.out.println(get[0]);
-		System.out.println(get[1]);
+		
 		
 	}
 	
-	public String[] get_dfa(String start_state, Character ch) // returns lang name or " "
+	public String[] get_dfa(String start_state, Character ch , int checkRegDef) // returns lang name or " "
 	{ 
+		
+	   String[] ret = new String[2];
+	   ret[0] = "0";
+	   ret[1] = "";
+	   
+	   
+       if(in.contains(ch) == false || checkRegDef == 1) { 
+    	   // we need to check the regular expressions if the input is unique
+    	 //  System.out.println("Check other options"); //D or L
+    	  
+    	    ch = check_reg_def(ch);
+    	    
+    	    if(ch == ' ')
+    	    	return ret;
+       }
+       
        int index = in.indexOf(ch);
-       String[] ret = new String[2];
+       
        ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
        ret[1] = finish.get(Integer.parseInt(ret[0]));
+       //if the finish state is dead end then check the regular definitions
        
+       if(ret[1] == "dead")
+       {
+    	   
+    	   ch = check_reg_def(ch);
+    	   if(ch == ' ')
+    		   return ret; 
        
-       return ret;
+       index = in.indexOf(ch);
+       ret[0] = DFA.get(Integer.parseInt(start_state)).get(index);
+       ret[1] = finish.get(Integer.parseInt(ret[0]));
+       }
+       
+       return ret ;
+       
+	}
+	public Character check_reg_def(Character ch)
+	{
+		
+		for(int i=0;i<regDef.names.size() ; i++) {
+			String t=regDef.getDefinition(regDef.names.get(i).charAt(0));
+		if(t.contains(Character.toString(ch)) == true )
+		{
+			
+			return regDef.names.get(i).charAt(0);
+		}
+		}
+		Character empty =' ';
+		return empty ;
+		
 	}
 }

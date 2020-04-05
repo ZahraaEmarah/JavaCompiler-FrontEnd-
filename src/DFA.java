@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -24,13 +25,15 @@ public class DFA {
 	ArrayList<String> finish = new ArrayList<String>();
 	ArrayList<String> DFA_states = new ArrayList<String>();
 	ArrayList<ArrayList<String>> DFA = new ArrayList<ArrayList<String>>();
+	RegularDefinition regDef;
 
 
-	public DFA(Node[] nodes, int rows, int column, Character[] inputs) {
+	public DFA(Node[] nodes, int rows, int column, Character[] inputs,RegularDefinition regDef) {
 		this.nodes = nodes;
 		this.rows = rows;
 		this.column = column;
 		this.inputs = inputs;
+		this.regDef = regDef;
 	}
 
 	public void Parse_NFA(int node_num, int inputs_num) {
@@ -223,8 +226,14 @@ public class DFA {
 			}
 			System.out.println();
 		}**/
-		min = new DFA_minimization(DFA_states, DFA, finish, inputs);
+		min = new DFA_minimization(DFA_states, DFA, finish, inputs,regDef);
 		min.zero_equivalence();
+		try {
+			ReadProgram read = new ReadProgram(min);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void Append_Empty_state() {
