@@ -6,7 +6,6 @@ public class NFA {
 	int finishNum;
 	Stack<Character> stack;
 	DFA dfa;
-	
 	TransitionTable table;
 	int num ;
 	//these two integers are used for STAR
@@ -14,7 +13,7 @@ public class NFA {
 	int finishNode;
 	RegularDefinition regDef;
 	
-	//int dontStart;
+	
 	//after adding all regular expressions to the Arraylist in LexicalRules
 	//We need to combine them and make NFA for each of them
 	//Note that all of them will have only ONE start node
@@ -25,11 +24,11 @@ public class NFA {
 	{
 		this.regDef = regDef;
 		nodeNum=1;
-		node = new Node[200];
-		node[0] = new Node();
+		node = new Node[200]; 
+		node[0] = new Node(); //the common start node for all of them 
 		node[0].nameIt(0);
 		finishNum=0;
-		table = new TransitionTable();
+		table = new TransitionTable(); 
 	}
 	//The function that starts building the NFA depending on the input regular expression
 	public void buildNFA(String[] expression)
@@ -100,7 +99,7 @@ public class NFA {
 		
 		while(!stack.empty())
 		{
-			//AND
+			    //pop from the stack
 			    String t = Character.toString(stack.pop());
 				temp = temp+t;
 			
@@ -169,10 +168,6 @@ public class NFA {
 		node[nodeNum]=new Node();
 		node[nodeNum].nameIt(nodeNum);
 		node[nodeNum].addArrow(exp);
-		
-		
-		node[nodeNum].addDefinition(regDef.getDefinition(exp),exp);
-		
 		Node temp = node[nodeNum++];
 		node[nodeNum] = temp.getNext();
 	}
@@ -229,10 +224,10 @@ public class NFA {
 				//handle the OR inside the bracket 
 				andNFA(divide[i] , 1);	
 			}
-			//System.out.println(finishNum);
+			
 			node[nodeNum].nameIt(nodeNum);
 			
-			if(finishNum==0) { //comon finish node of them 
+			if(finishNum==0) { //common finish node of them 
 				node[nodeNum].addArrow('~');
 				Node temp=node[nodeNum];
 				nodeNum++;
@@ -269,7 +264,7 @@ public class NFA {
 			}
 			if(exp.charAt(j) == '(')
 			{
-				System.out.println(exp.charAt(j));
+				
 				String[] temp =exp.split("\\(");
 				exp = temp[temp.length-1];
 				String[] cont = exp.split("\\)");
@@ -342,10 +337,7 @@ public class NFA {
 		table.endInput();
 		table.buildTable(node, nodeNum);
 		inputs = table.printInputLine();
-		for(int i1=0;i1<nodeNum;i1++) {
-		System.out.print("||"+i1+" -- " + node[i1].langName + "||      ");
-	    table.printTransitionTable(node[i1],nodeNum);
-		}
+		
 		
 		dfa = new DFA(node, nodeNum, table.index, inputs,regDef);	
 		dfa.Parse_NFA(nodeNum, table.index);

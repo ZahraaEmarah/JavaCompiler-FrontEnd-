@@ -15,7 +15,7 @@ public class TransitionTable {
 	{
 		//check for duplicates first
 		if(add == '~')
-			return;
+			return; 
 		for(int i=0 ; i<index;i++)
 		{
 			if(inputs[i] == add)
@@ -31,36 +31,9 @@ public class TransitionTable {
 	}
 	public Character[] printInputLine()
 	{
-		System.out.print("||STATE" + "||   ");
-		for(int i=0;i<index;i++)
-			System.out.print(inputs[i] + " ");
-		System.out.println("");
 		return inputs;
 	}
 
-	public void printTransitionTable(Node node,int nodeNum) //print the transition table 
-	{
-		int in = node.index;
-		if(in <= 0)
-			in = 1;
-
-		for(int i=0;i<index;i++)
-		{
-			
-			for(int j=0;j<in;j++)
-			{
-				if(node.inputsTable[i][j] == -1)
-				{
-					System.out.print("_");
-					break;
-				}
-					System.out.print(node.getInput(i,j) + " ");
-			}
-			System.out.print("|");
-		}
-		System.out.println("");
-		
-	}
 	
 	public void buildTable(Node[] node,int nodeNum)
 	{
