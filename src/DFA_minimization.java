@@ -26,7 +26,7 @@ public class DFA_minimization {
 
 	public void zero_equivalence() {
 		entry = new ArrayList<String>();
-		for (int i = 0; i < states.size(); i++) {
+		for (int i = 0; i < states.size(); i++) { // set of accepting states
 			if (!(finish.get(i).equals(" "))) {
 				entry.add(states.get(i));
 			}
@@ -34,20 +34,20 @@ public class DFA_minimization {
 		P.add(entry);
 
 		entry = new ArrayList<String>();
-		for (int i = 0; i < states.size(); i++) {
+		for (int i = 0; i < states.size(); i++) { // set of non-accepting states
 			if ((finish.get(i).equals(" ")))
 				entry.add(states.get(i));
 		}
 		P.add(entry);
-		N_equivalence(P);
-		print_min_DFA();
+		N_equivalence(P); // Get the 1 to N equivalence
+		print_min_DFA(); 
 	}
 
 	private void N_equivalence(ArrayList<ArrayList<String>> P) {
 
-		Pk = new ArrayList<ArrayList<String>>();
-		temp = new ArrayList<ArrayList<String>>();
-		temp = deep_copy(P);
+		Pk = new ArrayList<ArrayList<String>>(); // Result is stored here
+		temp = new ArrayList<ArrayList<String>>(); // Copy of the input array
+		temp = deep_copy(P); // copying the input array so we can compare it with the new equivalence
 
 		for (int i = 0; i < P.size(); i++) { // first set
 			for (int j = 0; j < P.get(i).size(); j++) { // first element
@@ -70,31 +70,34 @@ public class DFA_minimization {
 					j--;
 			}
 		}
-		temp.removeAll(Pk);
-		if (!temp.isEmpty())
+		temp.removeAll(Pk); // will be empty if the two group of sets are identical
+		
+		if (!temp.isEmpty()) // if not equal repeat
 			N_equivalence(Pk);
 
-		Filter_DFA();
+		Filter_DFA(); // remove the extra states found after minimization of the DFA
 	}
 
+	// This function checks if two states are equivalent
 	private boolean is_equivalent(String one, String two, ArrayList<ArrayList<String>> P) {
 		int state1 = Integer.parseInt(one);
 		int state2 = Integer.parseInt(two);
 
 		for (int i = 0; i < DFA.get(0).size(); i++) {
 			for (int j = 0; j < P.size(); j++) {
-				if (P.get(j).contains(DFA.get(state1).get(i))) {
+				if (P.get(j).contains(DFA.get(state1).get(i))) { // if the each two corresponding outputs are in the same set
 					if (!(P.get(j).contains(DFA.get(state2).get(i))))
 						return false;
 				}
 
-				if (!(finish.get(state1).equals(finish.get(state2))))
+				if (!(finish.get(state1).equals(finish.get(state2)))) // if they don't have the same language name
 					return false;
 			}
 		}
 		return true;
 	}
 
+	// This function generates a deep copy of the input group of sets
 	private ArrayList<ArrayList<String>> deep_copy(ArrayList<ArrayList<String>> original) {
 		ArrayList<ArrayList<String>> copy_cat = new ArrayList<ArrayList<String>>();
 		ArrayList<String> temp;
@@ -119,7 +122,7 @@ public class DFA_minimization {
 			String chosen = Pk.get(i).get(0);
 
 			for (int j = 1; j < Pk.get(i).size(); j++) {
-				// loop on dfa and replace all siblings with it
+				// loop on DFA and replace all states equivalent to it with it.
 				for (int k = 0; k < DFA.size(); k++) {
 					for (int n = 0; n < DFA.get(i).size(); n++) {
 						if (DFA.get(k).get(n).equals(Pk.get(i).get(j)))
@@ -139,12 +142,13 @@ public class DFA_minimization {
 		in.removeAll(Collections.singleton('~'));
 		System.out.println("\t" + in);
 	
-		for (int i = 0; i < Pk.size(); i++) {
+		for (int i = 0; i < Pk.size(); i++) { // remove extra states
 			for (int j = 1; j < Pk.get(i).size(); j++) {
 				states.remove(Pk.get(i).get(j));
 			}
 		}
 
+		// Print
 		for (int i = 0; i < Pk.size(); i++) {
 			if (finish.get(Integer.parseInt(states.get(i))).equals(" "))
 				System.out.print(states.get(i) + " -- > ");
