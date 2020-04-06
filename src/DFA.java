@@ -76,11 +76,7 @@ public class DFA {
 			temp = closure(i, count_table);
 			epsilon_closure[i] = remove_white_space(temp);
 		}
-		// for (int k = 0; k < epsilon_closure.length; k++) { System.out.println();
-		// System.out.println(k + " epsilon is " + epsilon_closure[k]); }
-
 		construct_DFA_table(epsilon_closure[0], count_table);
-
 	}
 
 	private String closure(int start, int c[][]) {
@@ -218,15 +214,6 @@ public class DFA {
 	}
 
 	private void print_DFA(ArrayList<ArrayList<String>> DFA) {
-	/**	System.out.println();
-		System.out.println();
-		for (int i = 0; i < DFA.size(); i++) {
-			System.out.print("||" + finish.get(i) + " " + DFA_states.get(i) + "|| ");
-			for (int j = 0; j < DFA.get(i).size(); j++) {
-				System.out.print(DFA.get(i).get(j) + "  ");
-			}
-			System.out.println();
-		}**/
 		min = new DFA_minimization(DFA_states, DFA, finish, inputs,regDef);
 		min.zero_equivalence();
 		//start reading the program after making the DFA minimized 
