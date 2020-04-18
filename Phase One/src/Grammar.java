@@ -71,7 +71,7 @@ public class Grammar {
 	public void addEps()
 	{
 		eps++;
-		if(eps>1) {
+		if(eps == first.length() && eps != 1) {
 			addFirst("~");
 			eps=0;
 		}

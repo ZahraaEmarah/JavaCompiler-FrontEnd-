@@ -147,7 +147,7 @@ public class ParseTable {
 		check = check + " ";
 		String redo = check;
 		int setRedo =0;
-		int store=0;
+		
 		
 		for(int i=0;i<CFG.size();i++)
 		{
@@ -156,9 +156,10 @@ public class ParseTable {
 			{
 				String split[] = temp.split(check);
 				String found = " "; //this is intial state
-			for(int j=1;j<split.length;j++) { 
-				found = split[j];		
-				if(setRedo == 1 && store == 0) {
+			    if(split.length>1)
+				found = split[1];
+			    
+				if(setRedo == 1 ) {
 					check = redo;
 					setRedo =0;
 				}
@@ -175,14 +176,10 @@ public class ParseTable {
 					if(first.contains("~")) { //if there is an epsilon then remove this non terminal with the one after 
 						first = first.replace("~", "");
 						//then we remove the found non terminal
-						if(split.length>1)
-							store =1;
-						else
-							store =0;
 						check = split[0] + " "; 
 						i--;
-						if(i== -1)
-							i=0;
+						if(i<-1)
+							i=-1;
 						setRedo = 1;
 					}
 					grammar[index].addFollow(first);
@@ -200,16 +197,7 @@ public class ParseTable {
 				
 			
 			}
-			if(found == " ")
-			{
-				if(grammar[i].getFollow().equals(" ")) {
-					
-					nonResolved.add(Integer.toString(index));
-				}
-				else
-				grammar[index].addFollow(grammar[i].getFollow());
-			}
-			}
+			
 			
 		}
 		makeParseTable();
