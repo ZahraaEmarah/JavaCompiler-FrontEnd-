@@ -19,6 +19,7 @@ public class ParseTable {
 			grammarCounter--;
 			grammar[grammarCounter] = new Grammar();
 			String grammarT = CFG.get(i);
+			
 			calculateFirst(grammarT);
 		}
 		for(int i=0;i<nonResolved.size();i++)
@@ -39,11 +40,12 @@ public class ParseTable {
 				String temp = grammar[j].getExpression();
 				String split[] = temp.split("\\|");
 				for(int k=0;k<split.length;k++) {
-					String checkIt = " " + grammar[i].getName();
+					String checkIt = " " + grammar[i].getName()+ " ";
 				if(split[k].contains(checkIt) == true)
 				{
 					//for loop at split (|)
 					String check = grammar[i].getName();
+					System.out.println(check);
 					calculateFollow(i,split[k],check,j);
 				}
 				}
@@ -60,7 +62,7 @@ public class ParseTable {
 		entriesPassed="";
 		makeParseTable();
 		//How to get entry in the table by knowing the non terminal and the terminal
-		System.out.println(getExpression("(","bexpr"));
+		//System.out.println(getExpression("(","bexpr"));
 	}
 	private void calculateFirst(String grammarString)
 	{
@@ -172,15 +174,14 @@ public class ParseTable {
 			temp=temp.replaceAll("( +)"," ");
 				String split[] = temp.split(check);
 				String found = " "; //this is intial state
-				
-			    
 			    if(split.length==1)
 			    	grammar[index].addFollow(grammar[i].getFollow());
 			    
 			   
-				for(int j=1;j<split.length;j++) {
+	     for(int j=1;j<split.length;j++) {
 					
 					 found = split[j];
+					 
 					 
 				if(Character.toString(found.charAt(0)).compareTo("'")== 0)// it is a terminal 
 				{
@@ -244,7 +245,7 @@ public class ParseTable {
 		intializeGrammarEntries();
 		System.out.println("**************THE TABLE***************");
 		//if multiple values then print error , return --Not LL(1)-- 
-		for(int i=0;i<grammar.length;i++)
+		for(int i=grammar.length-1;i>-1;i--)
 		{
 			for(int j=0;j<sizeOfTerminals;j++)
 			{
@@ -269,6 +270,7 @@ public class ParseTable {
 						int checkError =grammar[i].addEntry(terminals[j].getIndex(), expression); ;
 						if(checkError == 1)
 						{
+						
 							System.out.println("This is NOT a LL(1) Grammar");
 							return;
 						}
@@ -296,17 +298,22 @@ public class ParseTable {
 	private int addEntry(String expression , String term,int i,int j)
 	{
 		// expression = grammar[i].getExpression();
-	
+	    int checkError = 1;
 		String split[] = expression.split("\\|");
+		
 		expression = checkSimilar(split,term);
-		if(expression.equals(""))
+		if(expression.equals("")) {
+			
 			expression = grammar[i].getName() + "->" + grammar[i].getExpression();
-		else {
-			if(expression.startsWith("|"))
-				expression = expression.replace("|", "");
-			expression = grammar[i].getName() + "->" +" "+ expression;
 		}
-		int checkError = grammar[i].addEntry(terminals[j].getIndex(), expression);
+		else {
+			
+			expression = grammar[i].getName() + "->" +" "+ expression;	
+		}
+		
+		if(!expression.contains("|"))
+		checkError = grammar[i].addEntry(terminals[j].getIndex(), expression);
+		
 		return checkError;
 	}
 	
@@ -315,12 +322,27 @@ public class ParseTable {
 		String expression = "";
 		for(int i=0;i<split.length;i++)
 		{
-			String temp = split[i].replace("'", "");
-			if(temp.contains(terminal)) {
+			
+			//String temp = split[i].replace("'", "");
+			if(split[i].contains(terminal)) {
 				expression = expression +"|"+ split[i];
 			}
+			else { // if nonterminal then check it 
+				String splitSpace[] = split[i].split(" ");
+				int index = getNonTerminal(splitSpace[1]);
+				if(index!=-1) {
+				if(!grammar[index].getEntry(getTerminal(terminal)).equals("none"))
+						expression = expression +"|"+ split[i];
+				
+				}
+				
+			}
+			
 		}
-		expression = expression.replaceFirst("|", "");
+		
+		expression = expression.replaceFirst("\\|", "");
+
+		
 		return expression;
 	}
 	private void checkTerminals()

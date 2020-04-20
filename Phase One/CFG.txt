@@ -1,5 +1,16 @@
-# bexpr ::= bterm bexpr' 
-# bexpr' ::= 'or' bterm | \L 
-# bterm ::= bfactor bterm' 
-# bterm' ::= 'and' bfactor | \L 
-# bfactor ::= 'not' bfactor | '(' bexpr ')' | 'true' | 'false' 
+# METHOD_BODY ::= STATEMENT_LIST 
+# STATEMENT_LIST ::= STATEMENT STATEMENT_LISTDASH 
+# STATEMENT_LISTDASH ::= STATEMENT STATEMENT_LISTDASH | \L 
+# STATEMENT ::= DECLARATION | IF | WHILE | ASSIGNMENT 
+# DECLARATION ::= PRIMITIVE_TYPE 'id' ';' 
+# PRIMITIVE_TYPE ::= 'int' | 'float' 
+# IF ::= 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
+# WHILE ::= 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
+# ASSIGNMENT ::= 'id' '=' EXPRESSION ';' 
+# EXPRESSION ::= SIMPLE_EXPRESSION EXPRESSIONDASH 
+# EXPRESSIONDASH ::= 'relop' SIMPLE_EXPRESSION | \L 
+# SIMPLE_EXPRESSION ::= TERM SIMPLE_EXPRESSIONDASH | SIGN TERM SIMPLE_EXPRESSIONDASH 
+# SIMPLE_EXPRESSIONDASH ::= 'addop' TERM SIMPLE_EXPRESSIONDASH | \L 
+# TERM ::= FACTOR | TERM 'mulop' FACTOR 
+# FACTOR ::= 'id' | 'num' | '(' EXPRESSION ')' 
+# SIGN ::= '+' | '-' 

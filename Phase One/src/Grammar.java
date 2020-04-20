@@ -47,6 +47,7 @@ public class Grammar {
 		{
 			if(!follow.contains(split[i])) {
 				
+				
 				follow = follow + split[i] +" " ;
 			}
 		}
@@ -99,8 +100,6 @@ public class Grammar {
 	public int addEntry(int index,String exp)
 	{
 		if(ParseTableEntries.get(index).equals("none")) {
-			
-		
 		ParseTableEntries.set(index, exp);
 		return 0; // no error
 		}
