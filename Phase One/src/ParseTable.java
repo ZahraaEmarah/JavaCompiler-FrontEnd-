@@ -289,7 +289,7 @@ public class ParseTable {
 				String exp = grammar[i].getEntry(j);
 				if(exp == "none")
 					exp =  exp + "      ";
-				System.out.print("	"+exp + "	  "  );
+				System.out.print("	"+terminals[j].getValue() +exp + "	  "  );
 			}
 			System.out.println("");
 		}
