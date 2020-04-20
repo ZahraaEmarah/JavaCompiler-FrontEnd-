@@ -1,5 +1,5 @@
-# E ::= T E' 
-# E' ::= '+' T E' | \L 
-# T ::= F T' 
-# T' ::= '*' F T' | \L 
-# F ::= 'id' | '(' E ')'  
+# bexpr ::= bterm bexpr' 
+# bexpr' ::= 'or' bterm | \L 
+# bterm ::= bfactor bterm' 
+# bterm' ::= 'and' bfactor | \L 
+# bfactor ::= 'not' bfactor | '(' bexpr ')' | 'true' | 'false' 

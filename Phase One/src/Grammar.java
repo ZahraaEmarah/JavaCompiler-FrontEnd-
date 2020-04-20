@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Grammar {
 	
@@ -6,7 +7,9 @@ public class Grammar {
 	private String follow=new String();
 	private String name =new String();
 	private String exp = new String();
+	private ArrayList<String> ParseTableEntries = new ArrayList<String>();
 	int eps;
+	int entry;
 	
 	public Grammar()
 	{
@@ -25,11 +28,12 @@ public class Grammar {
 	}
 	public void addFirst(String add)
 	{
+		entry++; //used to add eps if all of the first has it
 		String split[] = add.split(" ");
 		for(int i=0;i<split.length;i++)
 		{
 			if(!first.contains(split[i]))
-				first = first + add +" " ;
+				first = first + split[i] +" " ;
 		}
 		
 		first=first.replaceAll("( +)"," "); //replace the non necessary spaces
@@ -41,8 +45,10 @@ public class Grammar {
 		
 		for(int i=0;i<split.length;i++)
 		{
-			if(!follow.contains(split[i]))
-				follow = follow + add +" " ;
+			if(!follow.contains(split[i])) {
+				
+				follow = follow + split[i] +" " ;
+			}
 		}
 		
 		follow=follow.replaceAll("( +)"," "); //replace the non necessary spaces
@@ -65,16 +71,44 @@ public class Grammar {
 	public String getName()
 	{
 		name = name.replaceFirst("# ", "");
+		
 		name = name.replace(" ", "");
+		//name = " " + name;
+		
 		return name;
 	}
 	public void addEps()
 	{
 		eps++;
-		if(eps == first.length() && eps != 1) {
+		
+	}
+	public void checkEps()
+	{
+		System.out.println(eps + " " + entry);
+		if(eps == entry) {
 			addFirst("~");
 			eps=0;
 		}
+	}
+	public void intializeParseTableEntries(int sizeOfTerminals)
+	{
+		for(int i=0;i<sizeOfTerminals;i++)
+			ParseTableEntries.add("none");
+
+	}
+	public int addEntry(int index,String exp)
+	{
+		if(ParseTableEntries.get(index).equals("none")) {
+			
+		
+		ParseTableEntries.set(index, exp);
+		return 0; // no error
+		}
+		return 1; //if there is an error
+	}
+	public String getEntry(int index)
+	{
+		return ParseTableEntries.get(index);
 	}
 
 }
