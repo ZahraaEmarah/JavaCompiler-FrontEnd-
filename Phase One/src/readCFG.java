@@ -39,6 +39,8 @@ public class readCFG {
 		
 		buffer.close();
 		ParseTable parse = new ParseTable(CFG);
+		ReadTokens read = new ReadTokens(parse,parse.startNonTerminal);
+		
 	}
 	
 

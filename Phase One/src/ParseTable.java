@@ -8,6 +8,7 @@ public class ParseTable {
 	ArrayList<String> nonResolved = new ArrayList<String>();
 	Terminals terminals[] = new Terminals[20];
 	int sizeOfTerminals;
+	String startNonTerminal;
 	public ParseTable(ArrayList<String> cfg)
 	{
 		CFG = cfg;
@@ -61,7 +62,9 @@ public class ParseTable {
 		printFollow();
 		entriesPassed="";
 		makeParseTable();
+		startNonTerminal = grammar[0].getName();
 		//How to get entry in the table by knowing the non terminal and the terminal
+		
 		//System.out.println(getExpression("(","bexpr"));
 	}
 	private void calculateFirst(String grammarString)
@@ -397,6 +400,8 @@ public class ParseTable {
 		int indexTerminal = getTerminal(terminal);
 		int indexNonTerminal = getNonTerminal(nonTerminal);
 		expression = grammar[indexNonTerminal].getEntry(indexTerminal);
+		nonTerminal = nonTerminal + "->" + "  ";
+		expression = expression.replace(nonTerminal, "");
 		return expression;
 	}
 	private int getTerminal(String terminal)
