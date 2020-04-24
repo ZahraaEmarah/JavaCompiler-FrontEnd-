@@ -7,6 +7,7 @@ public class main {
 		 LexicalRules lexicalRules = new LexicalRules();
 		 //call the read file then it will do everything
 		 lexicalRules.readFile();
+		 readCFG CFG = new readCFG();
 	}
 	
 } 

@@ -337,7 +337,8 @@ public class NFA {
 		table.endInput();
 		table.buildTable(node, nodeNum);
 		inputs = table.printInputLine();
-			
+		
+		
 		dfa = new DFA(node, nodeNum, table.index, inputs,regDef);	
 		dfa.Parse_NFA(nodeNum, table.index);
 		
