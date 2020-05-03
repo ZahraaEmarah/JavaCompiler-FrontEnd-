@@ -82,7 +82,6 @@ public class ReadProgram {
 		}
 		else if(get[1] == "dead" || i== exp.length()-1 ) {
 			//return to the last one not dead
-			
 			if(replace.length()==0) {
 				handle(exp,1);
 				return;

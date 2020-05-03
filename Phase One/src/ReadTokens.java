@@ -32,8 +32,10 @@ public class ReadTokens {
 			reader = new BufferedReader(new FileReader("output.txt"));
 			String line = reader.readLine();
 			while (line != null) {
-				//System.out.println(line);
+				
+				if(!line.contains("error")) {
 				input.push(line);
+				}
 				// read next line
 				line = reader.readLine();
 			}
@@ -80,13 +82,15 @@ public class ReadTokens {
 	{
 		if(st.contains("'"))
 		{
+			ip = ip.replace(" ", "");
+			st = st.replace(" ", "");
 			if(st.replaceAll("'", "").equals(ip))
 			{
 				stack.pop();
 				input.pop();
 				System.out.print(stack + "\t\t\t");
 				System.out.println(input);
-				System.out.println("here");
+				
 				writeOutputFile(stack,"",input);
 				output.add(ip);
 				return;
@@ -97,6 +101,7 @@ public class ReadTokens {
 				output.add(st.replaceAll("'", ""));
 				System.err.println(Err);
 				stack.pop();
+				
 				System.out.print(stack + "\t\t\t"); 
 				System.out.println(input);
 				writeOutputFile(stack,Err,input);
@@ -151,7 +156,7 @@ public class ReadTokens {
 	{
 		
 		
-		outputFile.write(str +extra+"\t\t" + input+ "\n");
+		outputFile.write(str +extra+"\t" + input+ "\n");
 	}
 
 }

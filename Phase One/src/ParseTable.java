@@ -9,28 +9,30 @@ public class ParseTable {
 	Terminals terminals[] = new Terminals[20];
 	int sizeOfTerminals;
 	String startNonTerminal;
+	int isLL;
 	public ParseTable(ArrayList<String> cfg)
 	{
 		CFG = cfg;
+		isLL=1;
 		//Each grammar will be in this class , having it's own First & Follow
 		grammar = new Grammar[CFG.size()];
 		grammarCounter = CFG.size();
+		System.out.println("*****************The grammar**********");
 		for(int i=CFG.size()-1;i>=0;i--)
 		{
 			grammarCounter--;
 			grammar[grammarCounter] = new Grammar();
 			String grammarT = CFG.get(i);
+			grammarT = grammarT.replaceAll("\\s+"," ");
+			
+			System.out.println(grammarT);
+			
 			
 			calculateFirst(grammarT);
 		}
-		for(int i=0;i<nonResolved.size();i++)
-		{
-			grammarCounter = Integer.parseInt(nonResolved.get(i));
-			calculateFirst(CFG.get(Integer.parseInt(nonResolved.get(i))));
-			nonResolved.remove(i);
-		}
+		System.out.println("****FIRST******");
 		printFirsts();
-		System.out.println("*********************");
+		System.out.println("*******FOLLOW******");
 		//after calculating first of each grammar now calculate the follow
 		//The start will always have follow of $
 		grammar[0].addFollow("$");
@@ -44,28 +46,19 @@ public class ParseTable {
 					String checkIt = " " + grammar[i].getName()+ " ";
 				if(split[k].contains(checkIt) == true)
 				{
-					//for loop at split (|)
 					String check = grammar[i].getName();
-					System.out.println(check);
 					calculateFollow(i,split[k],check,j);
 				}
 				}
 			
 		}
 		}
-		for(int i=0;i<nonResolved.size();i++)
-		{
-			//calculateFollow(Integer.parseInt(nonResolved.get(i)));
-			nonResolved.remove(i);
-		}
-		System.out.println("*********************");
+		
+		
 		printFollow();
 		entriesPassed="";
 		makeParseTable();
 		startNonTerminal = grammar[0].getName();
-		//How to get entry in the table by knowing the non terminal and the terminal
-		
-		//System.out.println(getExpression("(","bexpr"));
 	}
 	private void calculateFirst(String grammarString)
 	{
@@ -260,6 +253,7 @@ public class ParseTable {
 					if(checkError == 1)
 					{
 						System.out.println("This is NOT a LL(1) Grammar");
+						isLL=0;
 						return;
 					}
 					
@@ -275,6 +269,7 @@ public class ParseTable {
 						{
 						
 							System.out.println("This is NOT a LL(1) Grammar");
+							isLL=0;
 							return;
 						}
 					}
@@ -286,13 +281,14 @@ public class ParseTable {
 		printTerminals();
 		//print the table 
 		for(int i=0;i<grammar.length;i++) {
-			System.out.print(grammar[i].getName() +"             ");
+			System.out.println(grammar[i].getName() +"***");
 			for(int j=0;j<sizeOfTerminals;j++)
 			{
 				String exp = grammar[i].getEntry(j);
-				if(exp == "none")
-					exp =  exp + "      ";
-				System.out.print("	"+terminals[j].getValue() +exp + "	  "  );
+				if(exp == "none") 
+					exp = "_";
+				
+				System.out.println(terminals[j].getValue() +"\t"+ exp + " ");
 			}
 			System.out.println("");
 		}
@@ -382,9 +378,9 @@ public class ParseTable {
 		}
 	}
 	private void printTerminals() {
-		System.out.print("NON TERMINALS       ");
+		System.out.print("NON TERMINALS" + "\t \t");
 		for(int i=0;i<sizeOfTerminals;i++){
-			System.out.print(terminals[i].getValue() + "                    ");
+			System.out.print(terminals[i].getValue() + "\t");
 		}
 		System.out.println("  ");
 	}
@@ -398,6 +394,8 @@ public class ParseTable {
 	{
 		String expression="none";
 		int indexTerminal = getTerminal(terminal);
+		if(indexTerminal == -1)
+			return expression;
 		int indexNonTerminal = getNonTerminal(nonTerminal);
 		expression = grammar[indexNonTerminal].getEntry(indexTerminal);
 		nonTerminal = nonTerminal + "->" + "  ";
