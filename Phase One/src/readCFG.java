@@ -91,8 +91,7 @@ public class readCFG {
 		String newExp = ""; //Store for new exp
 		String temp = ""; //Store for the exp
 		int eps=0;
-		//removes left Factoring for only one constant that is common 
-		
+		//removes left Factoring for common 
 		for(int i=0;i<exp.length;i++)
 		{
 			

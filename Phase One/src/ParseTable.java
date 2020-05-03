@@ -26,8 +26,6 @@ public class ParseTable {
 			grammarT = grammarT.replaceAll("\\s+"," ");
 			
 			System.out.println(grammarT);
-			
-			
 			calculateFirst(grammarT);
 		}
 		System.out.println("****FIRST******");
