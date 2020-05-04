@@ -175,8 +175,6 @@ public class ParseTable {
 	     for(int j=1;j<split.length;j++) {
 					
 					 found = split[j];
-					 
-					 
 				if(Character.toString(found.charAt(0)).compareTo("'")== 0)// it is a terminal 
 				{
 					

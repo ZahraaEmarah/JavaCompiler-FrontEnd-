@@ -1,8 +1,6 @@
-int x;
-x = 5 ;
-float y ;
-y = 1.2;
-if (y == 1.0)
+float x;
+x=1.2;
+while(x>6.0)
 {
-	x = 10;
+	x=2.8;
 }
