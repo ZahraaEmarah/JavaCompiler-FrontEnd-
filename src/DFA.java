@@ -63,7 +63,7 @@ public class DFA {
 			}
 		}
 		epsilon_closure(count_table); // Calculate the epsilon closure of all states in the NFA transition table
-		Append_Empty_state(); // Add the Empty state (Ã˜)
+		Append_Empty_state(); // Add the Empty state (Ø)
 		finalize_DFA(); // Rename the states to replace for example state: (1,2,5) with a single number
 		Minimize_DFA(DFA); // Minimize the generated DFA
 	}

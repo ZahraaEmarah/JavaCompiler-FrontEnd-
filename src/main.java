@@ -1,13 +1,15 @@
 import java.io.IOException;
 
 public class main {
+	static LexicalRules lexicalRules;
+	static readCFG CFG;
 	
 
 	public static void main(String[] args) throws IOException {
-		 LexicalRules lexicalRules = new LexicalRules();
+		 lexicalRules = new LexicalRules();
 		 //call the read file then it will do everything
 		 lexicalRules.readFile();
-		 readCFG CFG = new readCFG();
+		 CFG = new readCFG();
 	}
 	
 } 

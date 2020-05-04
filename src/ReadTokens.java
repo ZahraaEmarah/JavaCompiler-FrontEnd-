@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -11,25 +12,30 @@ public class ReadTokens {
 	Stack<String> input = new Stack<>();
 	Stack<String> stack = new Stack<>();
 	ArrayList<String> output = new ArrayList<String>();
+	FileWriter outputFile;
 
-	public ReadTokens(ParseTable parseTable, String startNonTerminal) {
+	public ReadTokens(ParseTable parseTable, String startNonTerminal) throws IOException {
 		this.parseTable = parseTable;
 		this.startNonTerminal = startNonTerminal;
 		read_file();
+		
 	}
 
 	// example to getExpression
 	// getExpression(";","METHOD_BODY")
 	// get the expression of method_body when the terminal is ";"
 
-	private void read_file() {
+	private void read_file() throws IOException {
 		BufferedReader reader;
+		outputFile = new FileWriter("outputPhaseTwo.txt");
 		try {
 			reader = new BufferedReader(new FileReader("output.txt"));
 			String line = reader.readLine();
 			while (line != null) {
-				//System.out.println(line);
+				
+				if(!line.contains("error")) {
 				input.push(line);
+				}
 				// read next line
 				line = reader.readLine();
 			}
@@ -45,6 +51,7 @@ public class ReadTokens {
 		while(!stack.isEmpty())
 			track_stack(stack.peek(), input.peek());
 		System.out.println("\n\n" + output);
+		outputFile.close();
 	}
 	
 	private void insert_at_bottom(String x) 
@@ -71,16 +78,20 @@ public class ReadTokens {
         } 
     } 
 	
-	private void track_stack(String st, String ip)
+	private void track_stack(String st, String ip) throws IOException
 	{
 		if(st.contains("'"))
 		{
+			ip = ip.replace(" ", "");
+			st = st.replace(" ", "");
 			if(st.replaceAll("'", "").equals(ip))
 			{
 				stack.pop();
 				input.pop();
-				System.out.print(stack + "\t\t\t"); 
+				System.out.print(stack + "\t\t\t");
 				System.out.println(input);
+				
+				writeOutputFile(stack,"",input);
 				output.add(ip);
 				return;
 			}else
@@ -90,8 +101,10 @@ public class ReadTokens {
 				output.add(st.replaceAll("'", ""));
 				System.err.println(Err);
 				stack.pop();
+				
 				System.out.print(stack + "\t\t\t"); 
 				System.out.println(input);
+				writeOutputFile(stack,Err,input);
 				return;
 			}
 		}
@@ -102,14 +115,19 @@ public class ReadTokens {
 		{
 			if(!ip.equals("$"))
 			{
+				String Err = "Error: Illegal " + st + " discard " + ip;
 				System.err.println("Error: Illegal " + st + " discard " + ip);
+				writeOutputFile(stack,Err,input);
 				input.pop();
 			}else {
+				String Err = "Error: Illegal " + st;
 				System.err.println("Error: Illegal " + st);
+				writeOutputFile(stack,Err,input);
 				stack.pop();
 			}
 			System.out.print(stack + "\t\t\t"); 
 			System.out.println(input);
+			writeOutputFile(stack,"",input);
 			return;
 		}
 		
@@ -118,6 +136,7 @@ public class ReadTokens {
 			stack.pop();
 			System.out.print(stack + "\t\t\t"); 
 			System.out.println(input);
+			writeOutputFile(stack,"",input);
 			return;
 		}
 		
@@ -130,6 +149,14 @@ public class ReadTokens {
 		
 		System.out.print(stack + "\t\t\t"); 
 		System.out.println(input); 
+		writeOutputFile(stack,"",input);
+	}
+	
+	private void writeOutputFile(Stack<String> str , String extra , Stack<String> input) throws IOException
+	{
+		
+		
+		outputFile.write(str +extra+"\t" + input+ "\n");
 	}
 
 }

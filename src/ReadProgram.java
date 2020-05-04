@@ -82,6 +82,10 @@ public class ReadProgram {
 		}
 		else if(get[1] == "dead" || i== exp.length()-1 ) {
 			//return to the last one not dead
+			if(replace.length()==0) {
+				handle(exp,1);
+				return;
+			}
 			output_file(finish);
 			
 			//remove only the beginning
@@ -90,7 +94,7 @@ public class ReadProgram {
 			
 			if(replace.length()>1) //use replaceFirst if we are removing a string
 			exp = exp.replaceFirst(replace, "");
-			else //use substring if we are removing a special character 
+			else ///use substring if we are removing a special character 
 			exp = exp.substring(exp.indexOf(replace.charAt(replace.length()-1)) +1);
 		    
 		    if(exp.length()==0) //reached the end 

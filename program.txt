@@ -1,5 +1,6 @@
- int x ;
-x = 5; 
-if (x > 2) 
-{ x = 0; 
+float x;
+x=1.2;
+while(x>6.0)
+{
+	x=2.8;
 }
