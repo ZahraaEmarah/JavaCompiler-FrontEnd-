@@ -1,6 +1,11 @@
-float x;
-x=1.2;
-while(x>6.0)
+int y = 12;
+int x = 1000;
+x += 3;
+int z ;
+float j ;
+j = 100;
+
+for (int i = 100 ; i < 100 ; i ++ )
 {
-	x=2.8;
 }
+	int ze = 10;

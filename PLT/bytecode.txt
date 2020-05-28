@@ -1,0 +1,17 @@
+0:	bipush	 12
+1:	istore_0
+2:	sipush	 1000
+5:	istore_1
+6:	iconst_3
+7:	iload_1
+8:	iadd
+9:	istore_1
+10:	iconst_0
+11:	istore_2
+12:	fconst_0
+13:	fstore_3
+14:	ldc	 100
+16:	fstore_3
+17:	ldc	 10
+19:	fstore 4
+21:	return

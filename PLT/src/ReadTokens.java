@@ -36,6 +36,11 @@ public class ReadTokens {
 				if(!line.contains("error")) {
 				input.push(line);
 				}
+				else
+				{
+					System.out.println("PHASE ONE HAS ERROR");
+					System.exit(0);
+				}
 				// read next line
 				line = reader.readLine();
 			}
