@@ -47,8 +47,6 @@ public class JavaCodeGeneration {
 			
 			if(tempString.contains("}") )
 			{
-				
-				
 				if(dontWrite == 1) {
 					
 					int t = line;
@@ -301,7 +299,7 @@ public class JavaCodeGeneration {
 	// id = number op number 	------
 		
 	
-	char first = program.charAt(0);
+	char first = program.replaceAll("\\s","").charAt(0);
 	
 	if(!program.contains("="))
 	{
@@ -336,6 +334,7 @@ public class JavaCodeGeneration {
 	String check = split[1].replace("\\s", "").replace(";", "");
 	
 	int temp = numOfVariables;
+	
 	if(newVar == 1)
 	variableDeclaration.add(first);
 	else {
@@ -346,6 +345,7 @@ public class JavaCodeGeneration {
 	
 	
 	try {
+		
 		Float tryIt = Float.parseFloat(check);
 		handleNum(check,first,tryIt,1);
 		numOfVariables = temp;
@@ -522,7 +522,7 @@ public class JavaCodeGeneration {
 			if(length == 's')
 			line+=3;
 			else
-				line++;
+				line+=2;
 			if(storeIt == 1) {
 			
 			if(numOfVariables <= 3) {	

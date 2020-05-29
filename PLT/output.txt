@@ -23,6 +23,11 @@ id
 assign 
 num
 ;
+int
+id
+assign 
+num
+;
 for
 (
 int
@@ -40,8 +45,3 @@ addop
 )
 {
 }
-int
-id
-assign 
-num
-;

@@ -4,8 +4,8 @@ x += 3;
 int z ;
 float j ;
 j = 100;
-
+	int ze = 10;
 for (int i = 100 ; i < 100 ; i ++ )
 {
 }
-	int ze = 10;
+	
