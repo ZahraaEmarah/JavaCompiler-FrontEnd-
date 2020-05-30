@@ -10,6 +10,7 @@ public class main {
 		 //call the read file then it will do everything
 		 lexicalRules.readFile();
 		 CFG = new readCFG();
+		
 	}
 	
 } 

@@ -56,11 +56,13 @@ public class ReadTokens {
 			track_stack(stack.peek(), input.peek());
 		if (Error_count == 0) {
 			System.out.println("\nACCEPTED\n" + output);
+			outputFile.close();
+			JavaCodeGeneration code = new JavaCodeGeneration();
+
 		}else
-		{
+		{  	outputFile.close();
 			System.out.println("\nSYNTAX ERROR\n" + output);
 		}
-		outputFile.close();
 	}
 
 	private void insert_at_bottom(String x) {
