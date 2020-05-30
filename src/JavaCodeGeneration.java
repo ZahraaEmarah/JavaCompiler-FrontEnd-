@@ -117,7 +117,6 @@ public class JavaCodeGeneration {
 		String declaration = split[0].replace("(", "");
 		String ifCondition = split[1];
 		String increment = split[2].replace(")", "");
-		System.out.println(declaration + ifCondition + increment);
 		declaration = declaration.trim();
 		ifCondition = "(" + ifCondition + ")";
 		
@@ -127,7 +126,13 @@ public class JavaCodeGeneration {
 			handleConstants(declaration, 0);
 		
 		ifCondition(ifCondition);
-		handleInc(increment);
+		
+		if(increment.contains("="))
+			handleConstants(increment, 0);
+		else
+		    handleInc(increment);
+		
+		// i<j
 
 	}
 
@@ -320,7 +325,7 @@ public class JavaCodeGeneration {
 		if (newVar == 1)
 			variableDeclaration.add(first);
 		else {
-			System.out.println(split[0].replaceAll("\\s", ""));
+			//System.out.println(split[0].replaceAll("\\s", ""));
 			first = variableDeclaration.get(findVariables(split[0].replaceAll("\\s", "")));
 			numOfVariables = findVariables(split[0].replaceAll("\\s", ""));
 		}
