@@ -1,5 +1,6 @@
-int x = 20;
-if ( x != 10)
+float try = 200;
+int z = 5;
+for( int i = 0 ; i < z ; i ++ )
 {
-	x = 0;
+	try = try / 10;
 }
