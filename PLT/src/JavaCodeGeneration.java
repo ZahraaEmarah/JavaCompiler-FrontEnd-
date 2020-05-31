@@ -19,7 +19,6 @@ public class JavaCodeGeneration {
 	String tempWhile = "";
 	int whileNum1;
 	int whileNum2;
-	
 	int incrementFor;
 	String tempFor ="";
 	int forNum ;
@@ -173,7 +172,7 @@ public class JavaCodeGeneration {
 		// check if the condition has ZERO or not
 		String op1;
 		whileNum1 = line;
-		if (condition.contains("0"))
+		if (condition.contains(" 0 "))
 			op1 = "if";
 
 		else
