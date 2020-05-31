@@ -19,7 +19,7 @@ public class JavaCodeGeneration {
 	String tempWhile = "";
 	int whileNum1;
 	int whileNum2;
-	int isFor ;
+	
 	int incrementFor;
 	String tempFor ="";
 	int forNum ;
@@ -31,7 +31,7 @@ public class JavaCodeGeneration {
 		dontWrite = 0;
 		isWhile = 0;
 		line = 0;
-		isFor = 0;
+
 		whileNum1 = whileNum2 = 0;
 		incrementFor = 0;
 		readProg();
@@ -75,9 +75,13 @@ public class JavaCodeGeneration {
 				}
 				if(incrementFor != 0 )
 				{
-					String write = tempFor + "\n";
-					line += incrementFor;
-					write = write + line + ":\t" + "goto\t" + forNum ;
+					String write = "" ;
+					if(tempFor.contains("="))
+						handleConstants(tempFor, 0);
+					else
+					    handleInc(tempFor);
+					
+					write =  line + ":\t" + "goto\t" + forNum ;
 					line+=3;
 					writeByteCode(write);
 					incrementFor = 0;
@@ -143,12 +147,9 @@ public class JavaCodeGeneration {
 			handleConstants(declaration, 0);
 		forNum = line;
 		ifCondition(ifCondition);
-		isFor = 1;
-		if(increment.contains("="))
-			handleConstants(increment, 0);
-		else
-		    handleInc(increment);
-		isFor = 0;
+		
+		incrementFor = 1;
+		tempFor = increment;
 		// i<j
 
 	}
@@ -289,11 +290,7 @@ public class JavaCodeGeneration {
 		int temp = findVariables(split[0].replaceAll("\\s", ""));
 		String write = line + ":\t" + first + "inc	" + temp + "," + num;
 		
-		if(isFor == 1) {
-			tempFor += write;
-			incrementFor = 3 ;
-			return;
-		}
+		
 		line += 3;
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
@@ -433,15 +430,7 @@ public class JavaCodeGeneration {
 			write = write + "\n" + line + ":\t" + first + "store " + numOfVariables;
 			line += 2;
 		}
-		if(isFor == 1) {
-			if(!tempFor.equals(""))
-				tempFor+="\n";
-			tempFor += write;
-			incrementFor = line - temp;
-			line = temp;
-
-			return;
-		}
+		
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
 		else if (isWhile == 0)
@@ -493,15 +482,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
-				if(isFor == 1) {
-					if(!tempFor.equals(""))
-						tempFor+="\n";
-					tempFor += write;
-					incrementFor = line - temp;
-					line = temp;
-
-					return;
-				}
+				
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -534,15 +515,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
-				if(isFor == 1) {
-					if(!tempFor.equals(""))
-						tempFor+="\n";
-					tempFor += write;
-					incrementFor = line - temp;
-					line = temp;
-
-					return;
-				}
+				
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -564,15 +537,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
-				if(isFor == 1) {
-					if(!tempFor.equals(""))
-						tempFor+="\n";
-					tempFor += write;
-					incrementFor = line - temp;
-					line = temp;
-
-					return;
-				}
+				
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -599,16 +564,7 @@ public class JavaCodeGeneration {
 				}
 			}
 			
-			if(isFor == 1) {
-				if(!tempFor.equals(""))
-					tempFor+="\n";
-				tempFor += write;
-				
-				incrementFor = line - temp;
-				line = temp;
-
-				return;
-			}
+			
 			if (dontWrite == 0 && isWhile == 0)
 				writeByteCode(write);
 			else if (isWhile == 0)
