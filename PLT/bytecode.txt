@@ -1,17 +1,15 @@
-0:	bipush	 12
-2:	istore_0
-3:	sipush	 1000
-6:	istore_1
-7:	iconst_3
-8:	iload_1
-9:	iadd
-10:	istore_1
-11:	iconst_0
-12:	istore_2
-13:	fconst_0
-14:	fstore_3
-15:	ldc	 100
-17:	fstore_3
-18:	bipush	 10
-20:	istore 4
-22:	return
+0:	iconst_0
+1:	istore_0
+2:	iconst_ 1
+3:	istore_1
+4:	iconst_1
+5:	iload_1
+6:	if_icmpge 12
+9:	bipush	 11
+11:	istore_0
+9:	iconst_2
+9:	iload_1
+10:	iadd
+11:	istore_1
+15:	goto	4
+18:	return

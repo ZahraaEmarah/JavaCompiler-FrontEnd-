@@ -5,15 +5,21 @@
 | IF 
 | WHILE 
 | FOR 
-| ASSIGNMENT 
-# DECLARATION ::= PRIMITIVE_TYPE 'id' ';' 
+| ASSIGNMENT  
+# DECLARATION ::= PRIMITIVE_TYPE 'id' LINK EXPRESSION ';' 
+# LINK ::= 'assign' | ~ 
 # PRIMITIVE_TYPE ::= 'int' | 'float' 
-# IF ::= 'if' '(' EXPRESSION ')' '{' STATEMENT '}' 'else' '{' STATEMENT '}' 
+# IF ::= 'if' '(' EXPRESSION ')' '{' STATEMENT '}'  
+# ELSE ::= 'else' '{' STATEMENT '}' | ~ 
 # WHILE ::= 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
-# FOR ::= 'for' '(' EXPRESSION ';' EXPRESSION ';' EXPRESSION ')' '{' STATEMENT '}' 
-# ASSIGNMENT ::= 'id' 'assign' EXPRESSION ';' 
+# FOR ::= 'for' '(' DECLARATION EXPRESSION ';' FORARGS ')' '{' STATEMENT_LIST '}'
+# FORARGS ::= 'id' LINKER LINKER2
+# LINKER2 ::= 'id' OPS FACTOR | ~ 
+# LINKER ::= 'addop' 'addop' | 'assign' 
+# ASSIGNMENT ::= 'id' 'assign' EXPRESSION ';'  
 # EXPRESSION ::= SIMPLE_EXPRESSION | SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION 
 # SIMPLE_EXPRESSION ::= TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM 
-# TERM ::= FACTOR | TERM 'mulop' FACTOR 
+# TERM ::= FACTOR | TERM 'mulop' FACTOR  
 # FACTOR ::= 'id' | 'num' | '(' EXPRESSION ')' 
 # SIGN ::= '+' | '-' 
+# OPS ::= 'addop' | 'mulop' 
