@@ -115,7 +115,10 @@ public class JavaCodeGeneration {
 				handleInc(tempString);
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
-				ifCondition(tempString);
+				if(tempString.contains("&&") || tempString.contains("||"))
+					handleBoolean(tempString);
+				else
+				    ifCondition(tempString);
 			} else if (tempString.contains("=")) {
 				handleConstants(tempString, 0); // assignment with/without arithmetic op
 			}
@@ -126,6 +129,45 @@ public class JavaCodeGeneration {
 
 	}
 
+	private void handleBoolean(String program) throws IOException
+	{
+		System.out.println("boo");
+		System.out.println(program);
+		// 2 possibilities:
+	    // relop boo relop
+		// boolean boo boolean
+		
+		program = program.replaceAll("if", "");
+		System.out.println(program);
+		if(program.contains("&&") && program.contains("or")) // expression has both "&&" and "or"
+		{
+			
+		}
+		else if(program.contains("&&")) // expression has "&&" only
+		{
+			String[] temp = program.split("&&");
+			for(int i=0; i<temp.length; i++)
+			{
+				temp[i] = temp[i].replaceAll("\\(", "");
+				temp[i] = temp[i].replaceAll("\\)", "");
+				temp[i] = temp[i].trim();
+				temp[i] = "if ( " + temp[i] + " ) ";
+				ifCondition(temp[i]);
+				System.out.println(temp[i]);
+			}
+		}
+		else if(program.contains("or")) // expressions has "or" only
+		{
+			String[] temp = program.split("or");
+			for(int i=0; i<temp.length; i++)
+			{
+				System.out.println(temp[i]);
+			}
+		}
+		
+		
+	}
+	
 	private void handleFor(String program) throws IOException {
 		program = program.replace("for", "");
 		String[] split = program.split(";");
@@ -144,7 +186,6 @@ public class JavaCodeGeneration {
 
 		incrementFor = 1;
 		tempFor = increment;
-		// i<j
 
 	}
 
@@ -160,6 +201,7 @@ public class JavaCodeGeneration {
 
 	private void ifCondition(String program) throws IOException {
 
+		System.out.println(program);
 		String[] split = program.split("\\(");
 
 		String condition = split[1].replace(")", "");
@@ -175,6 +217,7 @@ public class JavaCodeGeneration {
 		// load the variables and numbers that will be compared
 		int var1 = findVariables(condition.split("\\" + temp)[0].replaceAll("\\s", ""));
 		char first = variableDeclaration.get(var1);
+
 		int var2 = -1;
 		if (!condition.split("\\" + temp)[1].equals(" 0 "))// if it is zero dont load it as the default is comparing
 															// with
@@ -335,16 +378,13 @@ public class JavaCodeGeneration {
 
 			return;
 		}
-		
+
 		String[] split = program.split("=");
 		String check = split[1].replace("\\s", "").replace(";", "");
-		
-		if(check.replaceAll(" ", "").equals("true"))
-		{
+
+		if (check.replaceAll(" ", "").equals("true")) {
 			check = "1";
-			
-		}else if(check.replaceAll(" ", "").equals("false"))
-		{
+		} else if (check.replaceAll(" ", "").equals("false")) {
 			check = "0";
 		}
 

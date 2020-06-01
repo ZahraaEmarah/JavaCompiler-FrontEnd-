@@ -11,7 +11,7 @@ assign :=
 addop :\+| \-
 mulop :\*|/
 and : &\& 
-or : or
+or : or 
 not : ! 
-true : true
+true : true 
 false : false 

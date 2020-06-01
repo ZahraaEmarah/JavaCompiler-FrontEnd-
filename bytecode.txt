@@ -1,3 +1,9 @@
-0:	iconst_0
+0:	iconst_ 0 
 1:	istore_0
-2:	return
+2:	iconst_4
+3:	iload_0
+4:	if_icmpge 7
+7:	iconst_0
+8:	iload_0
+9:	ifle 12
+12:	return
