@@ -19,6 +19,9 @@ public class JavaCodeGeneration {
 	String tempWhile = "";
 	int whileNum1;
 	int whileNum2;
+	int incrementFor;
+	String tempFor = "";
+	int forNum;
 	ArrayList<String> variable = new ArrayList<String>();
 	ArrayList<Character> variableDeclaration = new ArrayList<Character>();
 
@@ -27,7 +30,9 @@ public class JavaCodeGeneration {
 		dontWrite = 0;
 		isWhile = 0;
 		line = 0;
+
 		whileNum1 = whileNum2 = 0;
+		incrementFor = 0;
 		readProg();
 	}
 
@@ -66,6 +71,19 @@ public class JavaCodeGeneration {
 					writeTemp = "";
 
 				}
+				if (incrementFor != 0) {
+					String write = "";
+					if (tempFor.contains("="))
+						handleConstants(tempFor, 0);
+					else
+						handleInc(tempFor);
+
+					write = line + ":\t" + "goto\t" + forNum;
+					line += 3;
+					writeByteCode(write);
+					incrementFor = 0;
+					tempFor = "";
+				}
 				if (isWhile == 1 && tempString.contains("}")) {
 
 					ifCondition(whileCondition);
@@ -91,17 +109,14 @@ public class JavaCodeGeneration {
 				whileCond(tempString);
 			} else if (tempString.contains("for")) {
 				handleFor(tempString);
-			} else if (tempString.contains("int") || tempString.contains("float")) {
-
+			} else if (tempString.contains("int") || tempString.contains("float") || tempString.contains("boolean")) {
 				handleConstants(tempString, 1); // declaration with/without arithmetic op
 			} else if (tempString.contains("++") || tempString.contains("--")) {
-
 				handleInc(tempString);
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
 				ifCondition(tempString);
 			} else if (tempString.contains("=")) {
-
 				handleConstants(tempString, 0); // assignment with/without arithmetic op
 			}
 
@@ -110,7 +125,7 @@ public class JavaCodeGeneration {
 		fileWriter.close();
 
 	}
-	
+
 	private void handleFor(String program) throws IOException {
 		program = program.replace("for", "");
 		String[] split = program.split(";");
@@ -119,19 +134,16 @@ public class JavaCodeGeneration {
 		String increment = split[2].replace(")", "");
 		declaration = declaration.trim();
 		ifCondition = "(" + ifCondition + ")";
-		
+
 		if (declaration.contains("int") || declaration.contains("float"))
 			handleConstants(declaration, 1);
 		else
 			handleConstants(declaration, 0);
-		
+		forNum = line;
 		ifCondition(ifCondition);
-		
-		if(increment.contains("="))
-			handleConstants(increment, 0);
-		else
-		    handleInc(increment);
-		
+
+		incrementFor = 1;
+		tempFor = increment;
 		// i<j
 
 	}
@@ -155,7 +167,7 @@ public class JavaCodeGeneration {
 		// check if the condition has ZERO or not
 		String op1;
 		whileNum1 = line;
-		if (condition.contains("0"))
+		if (condition.contains(" 0 "))
 			op1 = "if";
 
 		else
@@ -164,7 +176,8 @@ public class JavaCodeGeneration {
 		int var1 = findVariables(condition.split("\\" + temp)[0].replaceAll("\\s", ""));
 		char first = variableDeclaration.get(var1);
 		int var2 = -1;
-		if (!condition.split("\\" + temp)[1].equals("0"))// if it is zero dont load it as the default is comparing with
+		if (!condition.split("\\" + temp)[1].equals(" 0 "))// if it is zero dont load it as the default is comparing
+															// with
 															// zero
 			var2 = numOrVariable(condition.split("\\" + temp)[1], first);
 
@@ -271,6 +284,7 @@ public class JavaCodeGeneration {
 		char first = variableDeclaration.get(findVariables(split[0].replaceAll("\\s", "")));
 		int temp = findVariables(split[0].replaceAll("\\s", ""));
 		String write = line + ":\t" + first + "inc	" + temp + "," + num;
+
 		line += 3;
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
@@ -289,8 +303,11 @@ public class JavaCodeGeneration {
 		// id = id op id
 		// id = number op id -----
 		// id = number op number ------
-		
+
 		char first = program.charAt(0);
+		if (first == 'b') {
+			first = 'i';
+		}
 
 		if (!program.contains("=")) {
 			variableDeclaration.add(first);
@@ -318,14 +335,24 @@ public class JavaCodeGeneration {
 
 			return;
 		}
+		
 		String[] split = program.split("=");
 		String check = split[1].replace("\\s", "").replace(";", "");
+		
+		if(check.replaceAll(" ", "").equals("true"))
+		{
+			check = "1";
+			
+		}else if(check.replaceAll(" ", "").equals("false"))
+		{
+			check = "0";
+		}
 
 		int temp = numOfVariables;
 		if (newVar == 1)
 			variableDeclaration.add(first);
 		else {
-			//System.out.println(split[0].replaceAll("\\s", ""));
+			// System.out.println(split[0].replaceAll("\\s", ""));
 			first = variableDeclaration.get(findVariables(split[0].replaceAll("\\s", "")));
 			numOfVariables = findVariables(split[0].replaceAll("\\s", ""));
 		}
@@ -353,6 +380,7 @@ public class JavaCodeGeneration {
 	private void handleOp(String operation, char first) throws IOException {
 		String op = "";
 		String[] split;
+		int temp = line;
 		if (operation.contains("+")) {
 			op = first + "add";
 			split = operation.split("\\+");
@@ -409,6 +437,7 @@ public class JavaCodeGeneration {
 			write = write + "\n" + line + ":\t" + first + "store " + numOfVariables;
 			line += 2;
 		}
+
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
 		else if (isWhile == 0)
@@ -443,7 +472,7 @@ public class JavaCodeGeneration {
 	private void handleNum(String check, char first, float num, int storeIt) throws IOException {
 
 		String write;
-
+		int temp = line;
 		if (check.contains("-")) {
 			num = num * -1;
 			if (num == 1) {
@@ -460,6 +489,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
+
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -481,7 +511,7 @@ public class JavaCodeGeneration {
 				if (length == 's')
 					line += 3;
 				else
-					line++;
+					line += 2;
 				if (storeIt == 1) {
 
 					if (numOfVariables <= 3) {
@@ -492,6 +522,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
+
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -513,6 +544,7 @@ public class JavaCodeGeneration {
 						line += 2;
 					}
 				}
+
 				if (dontWrite == 0 && isWhile == 0)
 					writeByteCode(write);
 				else if (isWhile == 0)
@@ -537,6 +569,7 @@ public class JavaCodeGeneration {
 					line += 2;
 				}
 			}
+
 			if (dontWrite == 0 && isWhile == 0)
 				writeByteCode(write);
 			else if (isWhile == 0)
