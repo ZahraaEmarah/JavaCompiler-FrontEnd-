@@ -17,11 +17,15 @@ public class JavaCodeGeneration {
 	String whileCondition = "";
 	int isWhile;
 	String tempWhile = "";
+	String tempBoo = "";
 	int whileNum1;
 	int whileNum2;
 	int incrementFor;
 	String tempFor = "";
 	int forNum;
+	int total_condition_no;
+	int condition_no;
+	boolean isBoolean = false;
 	ArrayList<String> variable = new ArrayList<String>();
 	ArrayList<Character> variableDeclaration = new ArrayList<Character>();
 
@@ -49,22 +53,28 @@ public class JavaCodeGeneration {
 					|| tempString.contains("/="))
 				tempString = arrangeString(tempString);
 
-			if (tempString.contains("}")) {
+			if (tempString.contains("}")) { // end of something
 
-				if (dontWrite == 1) {
+				if (dontWrite == 1) { // flag of if
 
 					int t = line;
-
-					tempString = buffer.readLine();
+					tempString = buffer.readLine(); // else or not
 					if (tempString != null) {
-
-						if (tempString.contains("else"))
-							t = line + 3;
+						if (tempString.contains("else")) // return to else
+							t = line + 3; // start of else
 					}
 					dontWrite = 0;
 					if (isWhile == 0) {
-						writeTemp = writeTemp.replace("~", Integer.toString(t));
-						writeByteCode(writeTemp);
+						// last line in if - take don't replace
+						if(isBoolean) {
+							tempBoo = tempBoo.replace("~", Integer.toString(t));
+							writeByteCode(tempBoo);
+							System.out.println("total string \n" + tempBoo);
+						}else {
+							writeTemp = writeTemp.replace("~", Integer.toString(t));
+						    writeByteCode(writeTemp);
+						}
+						isBoolean = false;
 					} else
 						tempWhile = tempWhile.replace("~", Integer.toString(t));
 
@@ -115,10 +125,10 @@ public class JavaCodeGeneration {
 				handleInc(tempString);
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
-				if(tempString.contains("&&") || tempString.contains("||"))
+				if (tempString.contains("&&") || tempString.contains("||"))
 					handleBoolean(tempString);
 				else
-				    ifCondition(tempString);
+					ifCondition(tempString);
 			} else if (tempString.contains("=")) {
 				handleConstants(tempString, 0); // assignment with/without arithmetic op
 			}
@@ -129,45 +139,39 @@ public class JavaCodeGeneration {
 
 	}
 
-	private void handleBoolean(String program) throws IOException
-	{
+	private void handleBoolean(String program) throws IOException {
 		System.out.println("boo");
 		System.out.println(program);
-		// 2 possibilities:
-	    // relop boo relop
-		// boolean boo boolean
-		
+	
 		program = program.replaceAll("if", "");
 		System.out.println(program);
-		if(program.contains("&&") && program.contains("or")) // expression has both "&&" and "or"
+		if (program.contains("&&") && program.contains("or")) // expression has both "&&" and "or"
 		{
-			
-		}
-		else if(program.contains("&&")) // expression has "&&" only
+
+		} else if (program.contains("&&")) // expression has "&&" only
 		{
 			String[] temp = program.split("&&");
-			for(int i=0; i<temp.length; i++)
-			{
+			total_condition_no = temp.length;
+			for (int i = 0; i < temp.length; i++) {
+				condition_no = i + 1;
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
 				temp[i] = "if ( " + temp[i] + " ) ";
-				ifCondition(temp[i]);
 				System.out.println(temp[i]);
+				isBoolean=true;
+				ifCondition(temp[i]);
 			}
-		}
-		else if(program.contains("or")) // expressions has "or" only
+		} else if (program.contains("or")) // expressions has "or" only
 		{
 			String[] temp = program.split("or");
-			for(int i=0; i<temp.length; i++)
-			{
+			for (int i = 0; i < temp.length; i++) {
 				System.out.println(temp[i]);
 			}
 		}
-		
-		
+
 	}
-	
+
 	private void handleFor(String program) throws IOException {
 		program = program.replace("for", "");
 		String[] split = program.split(";");
@@ -201,7 +205,6 @@ public class JavaCodeGeneration {
 
 	private void ifCondition(String program) throws IOException {
 
-		System.out.println(program);
 		String[] split = program.split("\\(");
 
 		String condition = split[1].replace(")", "");
@@ -215,19 +218,27 @@ public class JavaCodeGeneration {
 		else
 			op1 = "if_icmp";
 		// load the variables and numbers that will be compared
-		int var1 = findVariables(condition.split("\\" + temp)[0].replaceAll("\\s", ""));
-		char first = variableDeclaration.get(var1);
+		int var1 = findVariables(condition.split("\\" + temp)[0].replaceAll("\\s", "")); // x
+		char first = variableDeclaration.get(var1); // int or float
 
 		int var2 = -1;
-		if (!condition.split("\\" + temp)[1].equals(" 0 "))// if it is zero dont load it as the default is comparing
-															// with
-															// zero
+		if (!condition.split("\\" + temp)[1].equals(" 0 "))// if it is zero dont load it as the default is comparing												                   // zero
 			var2 = numOrVariable(condition.split("\\" + temp)[1], first);
 
 		if (var1 != -1) {
 			if (isWhile == 0) {
-				writeByteCode(line + ":	" + first + "load_" + var1);
-				line++;
+				if (var1 <= 3) {
+					tempBoo = tempBoo + line + ":	" + first + "load_" + var1 + "\n";
+					if(!isBoolean)
+						writeByteCode(line + ":	" + first + "load_" + var1);
+					line++;
+				} else {
+					
+					tempBoo = tempBoo + line + ":	" + first + "load " + var1 + "\n";
+					if(!isBoolean)
+						writeByteCode(line + ":	" + first + "load " + var1);
+					line += 2;
+				}
 			} else {
 				if (var1 <= 3) {
 					tempWhile = tempWhile + "\n" + line + ":	" + first + "load_" + var1;
@@ -238,17 +249,20 @@ public class JavaCodeGeneration {
 
 				}
 			}
-
 		}
 		String newLine = "\n";
 
 		if (var2 != -1) {
 			if (isWhile == 0) {
 				if (var2 <= 3) {
-					writeByteCode(newLine + line + ":	" + first + "load_" + var2);
+					tempBoo = tempBoo + line + ":	" + first + "load_" + var2 + "\n";
+					if(!isBoolean)
+						writeByteCode(newLine + line + ":	" + first + "load_" + var2);
 					line++;
 				} else {
-					writeByteCode(newLine + line + ":	" + first + "load " + var2);
+					tempBoo = tempBoo + line + ":	" + first + "load " + var2 + "\n";
+					if(!isBoolean)
+						writeByteCode(newLine + line + ":	" + first + "load " + var2);
 					line += 2;
 				}
 			} else {
@@ -262,6 +276,7 @@ public class JavaCodeGeneration {
 			}
 
 		}
+		
 		if (isWhile == 1) {
 			if (!split[0].replaceAll("\\s", "").equals("if"))
 				tempWhile = tempWhile + "\n" + line + ":" + "\t" + op1 + op2 + " " + whileNum2;
@@ -274,8 +289,8 @@ public class JavaCodeGeneration {
 		}
 		dontWrite = 1;
 		writeTemp = line + ":	" + op1 + op2 + " ~";
+		tempBoo = tempBoo + writeTemp;
 		line += 3;
-
 		// we dont write in the output file till we reach '}'
 	}
 
@@ -331,8 +346,10 @@ public class JavaCodeGeneration {
 		line += 3;
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
-		else if (isWhile == 0)
+		else if (isWhile == 0) {
 			writeTemp = writeTemp + "\n" + write;
+			tempBoo = tempBoo + "\n" + write;
+		}
 		else
 			tempWhile = tempWhile + "\n" + write;
 	}
@@ -369,8 +386,10 @@ public class JavaCodeGeneration {
 
 			if (dontWrite == 0 && isWhile == 0)
 				writeByteCode(write);
-			else if (isWhile == 0)
+			else if (isWhile == 0) {
 				writeTemp = writeTemp + "\n" + write;
+				tempBoo = tempBoo + "\n" + write;
+			}
 			else
 				tempWhile = tempWhile + "\n" + write;
 			variable.add(program.split(" ")[1].replace(";", ""));
@@ -480,8 +499,10 @@ public class JavaCodeGeneration {
 
 		if (dontWrite == 0 && isWhile == 0)
 			writeByteCode(write);
-		else if (isWhile == 0)
+		else if (isWhile == 0) {
 			writeTemp = writeTemp + "\n" + write;
+			tempBoo = tempBoo + "\n" + write;
+		}
 		else
 			tempWhile = tempWhile + "\n" + write;
 
@@ -530,10 +551,17 @@ public class JavaCodeGeneration {
 					}
 				}
 
-				if (dontWrite == 0 && isWhile == 0)
-					writeByteCode(write);
+				if (dontWrite == 0 && isWhile == 0) 
+				{
+					tempBoo = tempBoo +"\n"+ write+ "\n";
+					if(!isBoolean)
+						writeByteCode(write);
+				}
 				else if (isWhile == 0)
+				{
 					writeTemp = writeTemp + "\n" + write;
+					tempBoo = tempBoo + "\n" + write+ "\n";
+				}
 				else {
 
 					tempWhile = tempWhile + "\n" + write;
@@ -564,9 +592,15 @@ public class JavaCodeGeneration {
 				}
 
 				if (dontWrite == 0 && isWhile == 0)
-					writeByteCode(write);
-				else if (isWhile == 0)
+				{
+					tempBoo = tempBoo + "\n"+write+ "\n";
+					if(!isBoolean)
+						writeByteCode(write);
+				}
+				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
+					tempBoo = tempBoo + "\n" + write+ "\n";
+				}
 				else
 					tempWhile = tempWhile + "\n" + write;
 				return;
@@ -585,10 +619,15 @@ public class JavaCodeGeneration {
 					}
 				}
 
-				if (dontWrite == 0 && isWhile == 0)
-					writeByteCode(write);
-				else if (isWhile == 0)
+				if (dontWrite == 0 && isWhile == 0) {
+					tempBoo = tempBoo +"\n"+ write+ "\n";
+					if(!isBoolean)
+						writeByteCode(write);
+	        	}
+				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
+					tempBoo = tempBoo + "\n" + write;
+				}
 				else
 					tempWhile = tempWhile + "\n" + write;
 				return;
@@ -610,10 +649,15 @@ public class JavaCodeGeneration {
 				}
 			}
 
-			if (dontWrite == 0 && isWhile == 0)
-				writeByteCode(write);
-			else if (isWhile == 0)
+			if (dontWrite == 0 && isWhile == 0) {
+				tempBoo = tempBoo +"\n"+ write + "\n";
+				if(!isBoolean)
+					writeByteCode(write);
+			}
+			else if (isWhile == 0) {
 				writeTemp = writeTemp + "\n" + write;
+				tempBoo = tempBoo +"\n"+ write+ "\n";
+			}
 			else
 				tempWhile = tempWhile + "\n" + write;
 			return;
