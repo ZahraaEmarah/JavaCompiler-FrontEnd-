@@ -24,11 +24,11 @@ public class JavaCodeGeneration {
 	String tempFor = "";
 	int forNum;
 	int booline;
-	int total_condition_no;
-	int condition_no;
 	boolean isBoolean = false;
 	boolean isLast = false;
 	boolean orflag = false;
+	int stat = 0;
+	ArrayList<String> boovariable = new ArrayList<String>();
 	ArrayList<String> variable = new ArrayList<String>();
 	ArrayList<Character> variableDeclaration = new ArrayList<Character>();
 
@@ -70,10 +70,8 @@ public class JavaCodeGeneration {
 					if (isWhile == 0) {
 						// last line in if - take don't replace
 						if (isBoolean) {
-							System.out.println("total string \n" + tempBoo);
-
 							tempBoo = tempBoo.replace("~", Integer.toString(t));
-							if(tempBoo.contains("#"))
+							if (tempBoo.contains("#"))
 								tempBoo = tempBoo.replaceAll("#", Integer.toString(booline));
 							writeByteCode(tempBoo);
 							System.out.println("total string \n" + tempBoo + "\n" + booline);
@@ -132,7 +130,7 @@ public class JavaCodeGeneration {
 				handleInc(tempString);
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
-				if (tempString.contains("&&") || tempString.contains("or"))
+				if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
 					handleBoolean(tempString);
 				else
 					ifCondition(tempString);
@@ -143,19 +141,17 @@ public class JavaCodeGeneration {
 		}
 		writeByteCode(line + ":\treturn");
 		fileWriter.close();
+		buffer.close();
 
 	}
 
 	private void handleBoolean(String program) throws IOException {
 
 		program = program.replaceAll("if", "");
-		System.out.println(program);
-	    if (program.contains("&&")) // expression has "&&" only
+		if (program.contains("&&")) // expression has "&&" only
 		{
 			String[] temp = program.split("&&");
-			total_condition_no = temp.length;
 			for (int i = 0; i < temp.length; i++) {
-				condition_no = i + 1;
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
@@ -164,32 +160,28 @@ public class JavaCodeGeneration {
 				isBoolean = true;
 				ifCondition(temp[i]);
 			}
-		} 
-		else if (program.contains("or")) // expressions has "or" only
+		} else if (program.contains("or")) // expressions has "or" only
 		{
 			orflag = true;
 			String[] temp = program.split("or");
-			total_condition_no = temp.length;
 			for (int i = 0; i < temp.length; i++) {
-				condition_no = i + 1;
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
-				if (i < temp.length-1) {
-					if(temp[i].contains(">"))
+				if (i < temp.length - 1) {
+					if (temp[i].contains(">"))
 						temp[i] = temp[i].replaceAll(">", "<");
-					else if(temp[i].contains("<"))
+					else if (temp[i].contains("<"))
 						temp[i] = temp[i].replaceAll("<", ">");
-					else if(temp[i].contains("<="))
+					else if (temp[i].contains("<="))
 						temp[i] = temp[i].replaceAll("<=", ">=");
-					else if(temp[i].contains(">="))
+					else if (temp[i].contains(">="))
 						temp[i] = temp[i].replaceAll(">=", "<=");
-					else if(temp[i].contains("!="))
+					else if (temp[i].contains("!="))
 						temp[i] = temp[i].replaceAll("!=", "==");
-					else if(temp[i].contains("=="))
+					else if (temp[i].contains("=="))
 						temp[i] = temp[i].replaceAll("==", "!=");
-				}else
-				{
+				} else {
 					isLast = true;
 				}
 				temp[i] = "if ( " + temp[i] + " ) ";
@@ -199,8 +191,55 @@ public class JavaCodeGeneration {
 			}
 			orflag = false;
 			isLast = false;
+		} else if (program.contains("!")) {
+			program = program.replaceAll("!", "");
+			program = program.replaceAll("\\(", "");
+			program = program.replaceAll("\\)", "");
+			program = program.trim();
+			if (isRelop(program)) { // Not + relop
+				if (program.contains(">"))
+					program = program.replaceAll(">", "<");
+				else if (program.contains("<"))
+					program = program.replaceAll("<", ">");
+				else if (program.contains("<="))
+					program = program.replaceAll("<=", ">=");
+				else if (program.contains(">="))
+					program = program.replaceAll(">=", "<=");
+				else if (program.contains("!="))
+					program = program.replaceAll("!=", "==");
+				else if (program.contains("=="))
+					program = program.replaceAll("==", "!=");
+				program = "if ( " + program + " ) ";
+				ifCondition(program);
+			} else // Not + id
+			{
+				if (boovariable.contains(program.trim())) {
+					System.out.println(program + "\n");
+					program = "if ( " + program + " == 0 ) ";
+					ifCondition(program);
+				} else { // error variable passed isn't boolean
+					stat = 1;
+				}
+			}			
 		}
 
+	}
+
+	private boolean isRelop(String program) {
+		if (program.contains(">"))
+			return true;
+		else if (program.contains("<"))
+			return true;
+		else if (program.contains("<="))
+			return true;
+		else if (program.contains(">="))
+			return true;
+		else if (program.contains("!="))
+			return true;
+		else if (program.contains("=="))
+			return true;
+
+		return false;
 	}
 
 	private void handleFor(String program) throws IOException {
@@ -320,7 +359,7 @@ public class JavaCodeGeneration {
 			return;
 		}
 		dontWrite = 1;
-		if(isLast || !orflag)
+		if (isLast || !orflag)
 			writeTemp = line + ":	" + op1 + op2 + " ~";
 		else
 			writeTemp = line + ":	" + op1 + op2 + " #";
@@ -432,13 +471,13 @@ public class JavaCodeGeneration {
 			return;
 		}
 
-		System.out.println(program);
 		String[] split = program.split("=");
 		String check = split[1].replace("\\s", "").replace(";", "");
-		System.out.println("-" + check + "-");
 		if (check.replaceAll(" ", "").equals("true")) {
+			boovariable.add(split[0].replaceAll("boolean", "").trim());
 			check = "1";
 		} else if (check.replaceAll(" ", "").equals("false")) {
+			boovariable.add(split[0].replaceAll("boolean", "").trim());
 			check = "0";
 		}
 
@@ -474,7 +513,6 @@ public class JavaCodeGeneration {
 	private void handleOp(String operation, char first) throws IOException {
 		String op = "";
 		String[] split;
-		int temp = line;
 		if (operation.contains("+")) {
 			op = first + "add";
 			split = operation.split("\\+");
@@ -493,9 +531,7 @@ public class JavaCodeGeneration {
 		}
 
 		String num1 = split[0].replace("\\s", "");
-		String num2 = split[1].replace("\\s", "");
 		int num_one = numOrVariable(split[0], first);
-		int num_two = numOrVariable(split[1], first);
 
 		String write = "";
 
@@ -509,20 +545,29 @@ public class JavaCodeGeneration {
 			}
 
 		}
-		if (num_two != -1) {
-			if (num_two <= 3) {
-				write = write + "\n" + line + ":	" + first + "load_" + num_two;
-				line++;
-			} else {
-				write = write + "\n" + line + ":	" + first + "load " + num_two;
-				line += 2;
+		int length = split.length;
+		int num_two = -1;
+		if (length > 1) {
+			String num2 = split[1].replace("\\s", "");
+			num_two = numOrVariable(split[1], first);
+			if (num_two != -1) {
+				if (num_two <= 3) {
+					write = write + "\n" + line + ":	" + first + "load_" + num_two;
+					line++;
+				} else {
+					write = write + "\n" + line + ":	" + first + "load " + num_two;
+					line += 2;
+				}
 			}
 		}
+
 		String newline = "\n";
 		if (num_one == -1 && num_two == -1)
 			newline = "";
-		write = write + newline + line + ":	" + op;
-		line++;
+		if (length > 1) {
+			write = write + newline + line + ":	" + op;
+			line++;
+		}
 
 		if (numOfVariables <= 3) {
 			write = write + "\n" + line + ":\t" + first + "store_" + numOfVariables;
@@ -660,7 +705,7 @@ public class JavaCodeGeneration {
 			}
 		}
 
-		if (num >= 0) {
+		if (num > 0) {
 
 			// in the range of 0-5
 			write = line + ":" + "\t" + first + "const_" + check;

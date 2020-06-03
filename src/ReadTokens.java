@@ -61,6 +61,8 @@ public class ReadTokens {
 			console = "ACCEPTED";
 			outputFile.close();
 			JavaCodeGeneration code = new JavaCodeGeneration();
+			if(code.stat == 1)
+				console = "Boolean undeclared";
 
 		}else
 		{  	outputFile.close();

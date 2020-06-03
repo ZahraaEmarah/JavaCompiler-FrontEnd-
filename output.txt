@@ -1,11 +1,12 @@
-int
+boolean
 id
+assign 
+true 
 ;
 if
 (
+not 
 id
-relop 
-num
 )
 {
 }
