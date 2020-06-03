@@ -8,13 +8,13 @@ id
 relop 
 num
 )
-and 
+or 
 (
 id
 relop 
 num
 )
-and 
+or 
 (
 id
 relop 
@@ -25,6 +25,8 @@ num
 int
 id
 assign 
+id
+addop 
 num
 ;
 }

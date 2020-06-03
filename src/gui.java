@@ -123,7 +123,7 @@ public class gui {
 		btnCompile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String string = textArea.getText();
-				System.out.println(string);
+				textArea_1.setText("");
 
 				try (PrintWriter out = new PrintWriter("program.txt")) {
 					out.println(string);
@@ -142,21 +142,24 @@ public class gui {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				textArea_1.setText("");
-				try {
-					BufferedReader in = new BufferedReader(new FileReader("bytecode.txt"));
-					String line;
-					line = in.readLine();
-					while(line != null){
-						  textArea_1.append(line + "\n");
-						  line = in.readLine();
+				if (CFG.console.equals("ACCEPTED")) {
+					try {
+						BufferedReader in = new BufferedReader(new FileReader("bytecode.txt"));
+						String line;
+						line = in.readLine();
+						while (line != null) {
+							textArea_1.append(line + "\n");
+							line = in.readLine();
 						}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			
+				textArea_2.setText(CFG.console);
+
 			}
 		});
 		btnCompile.setBackground(Color.LIGHT_GRAY);

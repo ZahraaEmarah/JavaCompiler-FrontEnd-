@@ -14,19 +14,20 @@ public class ReadTokens {
 	ArrayList<String> output = new ArrayList<String>();
 	FileWriter outputFile;
 	int Error_count = 0;
+	String console = "";
+	public String con = "";
 
 	public ReadTokens(ParseTable parseTable, String startNonTerminal) throws IOException {
 		this.parseTable = parseTable;
 		this.startNonTerminal = startNonTerminal;
-		read_file();
-
+		con = read_file();
 	}
 
 	// example to getExpression
 	// getExpression(";","METHOD_BODY")
 	// get the expression of method_body when the terminal is ";"
 
-	private void read_file() throws IOException {
+	private String read_file() throws IOException {
 		BufferedReader reader;
 		outputFile = new FileWriter("outputPhaseTwo.txt");
 		try {
@@ -37,6 +38,7 @@ public class ReadTokens {
 				if (!line.contains("error")) {
 					input.push(line);
 				} else {
+					console = "PHASE ONE HAS ERROR";
 					System.out.println("PHASE ONE HAS ERROR");
 					System.exit(0);
 				}
@@ -56,13 +58,17 @@ public class ReadTokens {
 			track_stack(stack.peek(), input.peek());
 		if (Error_count == 0) {
 			System.out.println("\nACCEPTED\n" + output);
+			console = "ACCEPTED";
 			outputFile.close();
 			JavaCodeGeneration code = new JavaCodeGeneration();
 
 		}else
 		{  	outputFile.close();
+		    console = "SYNTAX ERROR";
 			System.out.println("\nSYNTAX ERROR\n" + output);
 		}
+		
+		return console;
 	}
 
 	private void insert_at_bottom(String x) {
