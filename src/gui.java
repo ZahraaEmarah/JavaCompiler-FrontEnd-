@@ -1,10 +1,7 @@
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
@@ -13,10 +10,8 @@ import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
@@ -145,6 +140,8 @@ public class gui {
 
 				textArea_1.setText("");
 				if (CFG.console.equals("ACCEPTED")) {
+					textArea_2.setForeground(new Color(0, 128, 0));
+					textArea_2.setText(CFG.console);
 					try {
 						BufferedReader in = new BufferedReader(new FileReader("bytecode.txt"));
 						String line;
@@ -153,13 +150,16 @@ public class gui {
 							textArea_1.append(line + "\n");
 							line = in.readLine();
 						}
+						in.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
-				textArea_2.setText(CFG.console);
+				} else {
 
+					textArea_2.setForeground(Color.RED);
+					textArea_2.setText(CFG.console);
+				}
 			}
 		});
 		btnCompile.setBackground(Color.LIGHT_GRAY);

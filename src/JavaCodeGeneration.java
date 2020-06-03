@@ -243,7 +243,7 @@ public class JavaCodeGeneration {
 		// check if the condition has ZERO or not
 		String op1;
 		whileNum1 = line;
-		if (condition.contains(" 0 "))
+		if (condition.contains("0"))
 			op1 = "if";
 
 		else
@@ -341,19 +341,19 @@ public class JavaCodeGeneration {
 		}
 		if (condition.contains("<=")) {
 			temp = "<=";
-			return "gt";
+			return "ge";
 		}
 		if (condition.contains(">=")) {
 			temp = ">=";
-			return "lt";
+			return "le";
 		}
 		if (condition.contains("<")) {
 			temp = "<";
-			return "ge";
+			return "gt";
 		}
 		if (condition.contains(">")) {
 			temp = ">";
-			return "le";
+			return "lt";
 		}
 		return "";
 	}
@@ -571,7 +571,6 @@ public class JavaCodeGeneration {
 		if (check.contains("-")) {
 			num = num * -1;
 			if (num == 1) {
-
 				write = line + ":" + "\t" + first + "const_" + check.replace("-", "m");
 				line++;
 				if (storeIt == 1) {

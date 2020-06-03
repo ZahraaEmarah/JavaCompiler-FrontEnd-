@@ -1,18 +1,5 @@
 0:	iconst_0
 1:	istore_0
-
-2:	iconst_0
-3:	iload_0
-4:	ifgt 18
-7:	bipush	9
-9:	iload_0
-10:	if_icmpeq 18
-13:	iconst_4
-14:	iload_0
-15:	if_icmpge 22
-18:	iconst_5
-
-19:	iload_0
-20:	iadd
-21:	istore_1
-22:	return
+2:	iload_0
+3:	ifne 6
+6:	return
