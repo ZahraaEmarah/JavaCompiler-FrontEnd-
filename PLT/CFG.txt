@@ -5,8 +5,10 @@
 | IF 
 | WHILE 
 | FOR 
-| ASSIGNMENT  
+| ASSIGNMENT 
+| BOO_DEC 
 # DECLARATION ::= PRIMITIVE_TYPE 'id' LINK EXPRESSION ';' 
+# BOO_DEC ::= 'boolean' 'id' LINK BOO_EXPRESSION ';' 
 # LINK ::= 'assign' | ~ 
 # PRIMITIVE_TYPE ::= 'int' | 'float' 
 # IF ::= 'if' '(' EXPRESSION ')' '{' STATEMENT '}'  
@@ -17,9 +19,13 @@
 # LINKER2 ::= 'id' OPS FACTOR | ~ 
 # LINKER ::= 'addop' 'addop' | 'assign' 
 # ASSIGNMENT ::= 'id' 'assign' EXPRESSION ';'  
-# EXPRESSION ::= SIMPLE_EXPRESSION | SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION 
+# EXPRESSION ::= SIMPLE_EXPRESSION | SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION | SIMPLE_EXPRESSION AND | SIMPLE_EXPRESSION OR | NOT 
+# BOO_EXPRESSION ::=  'true' | 'false' | ~ 
 # SIMPLE_EXPRESSION ::= TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM 
 # TERM ::= FACTOR | TERM 'mulop' FACTOR  
 # FACTOR ::= 'id' | 'num' | '(' EXPRESSION ')' 
 # SIGN ::= '+' | '-' 
 # OPS ::= 'addop' | 'mulop' 
+# NOT ::= 'not' EXPRESSION  
+# AND ::= 'and' EXPRESSION  
+# OR ::= 'or' EXPRESSION 

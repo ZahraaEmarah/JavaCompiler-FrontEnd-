@@ -1,17 +1,13 @@
-0:	ldc	 200
-2:	fstore_0
-3:	iconst_ 5
-4:	istore_1
-5:	iconst_ 0
-6:	istore_2
-7:	iload_2
-
-8:	iload_1
-9:	if_icmpge 17
-12:	ldc	10
-14:	fload_0
-15:	fdiv
-16:	fstore_0
-17:	iinc	2,1
-20:	goto	7
-23:	return
+0:	iconst_ 4
+1:	istore_0
+2:	fconst_0
+3:	fstore_1
+4:	iconst_0
+5:	istore_2
+6:	iload_2
+7:	istore_0
+9:	iconst_2
+8:	iload_2
+10:	iadd
+11:	istore_0
+12:	return

@@ -8,6 +8,7 @@ public class readCFG {
 	ArrayList<String> CFG = new ArrayList<String>();
 	ReadTokens read;
 	ParseTable parse;
+	public String console = "";
 	public readCFG() throws IOException
 	{
 		readProg();
@@ -61,6 +62,7 @@ public class readCFG {
 		parse = new ParseTable(CFG);
 		if(parse.isLL == 1)
 		read = new ReadTokens(parse,parse.startNonTerminal); 
+		console = read.con;
 		
 	}
 	private int identifyLeftFactoring(String exp,int j)

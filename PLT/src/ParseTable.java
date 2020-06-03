@@ -6,7 +6,7 @@ public class ParseTable {
 	int grammarCounter ;
 	String entriesPassed = "";
 	ArrayList<String> nonResolved = new ArrayList<String>();
-	Terminals terminals[] = new Terminals[100];
+	Terminals terminals[] = new Terminals[30];
 	int sizeOfTerminals;
 	String startNonTerminal;
 	int isLL;
