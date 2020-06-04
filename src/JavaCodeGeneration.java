@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class JavaCodeGeneration {
 	// Generate the Java Byte Code
@@ -220,7 +221,7 @@ public class JavaCodeGeneration {
 				} else { // error variable passed isn't boolean
 					stat = 1;
 				}
-			}			
+			}
 		}
 
 	}
@@ -473,6 +474,7 @@ public class JavaCodeGeneration {
 
 		String[] split = program.split("=");
 		String check = split[1].replace("\\s", "").replace(";", "");
+
 		if (check.replaceAll(" ", "").equals("true")) {
 			boovariable.add(split[0].replaceAll("boolean", "").trim());
 			check = "1";
@@ -492,25 +494,107 @@ public class JavaCodeGeneration {
 
 		try {
 			Float tryIt = Float.parseFloat(check);
+			System.out.println("handle num");
 			handleNum(check, first, tryIt, 1);
 			numOfVariables = temp;
 			if (newVar == 1) {
 				variable.add(split[0].split(" ")[1]);
 				numOfVariables++;
 			}
-		} catch (NumberFormatException nfe) {
+		} catch (NumberFormatException nfe) { // after equal there's an arithmetic operation
 
-			handleOp(split[1].replace(";", ""), first);
-			numOfVariables = temp;
-			if (newVar == 1) {
-				variable.add(split[0].split(" ")[1]);
-				numOfVariables++;
-			}
+			String postfix = convert_to_postfix(split[1].replaceAll(";", ""));
+			handle_A_op(postfix, first);
+			/**
+			 * handleOp(split[1].replace(";", ""), first); numOfVariables = temp; if (newVar
+			 * == 1) { variable.add(split[0].split(" ")[1]); numOfVariables++; }
+			 **/
 		}
 
 	}
 
+	private void handle_A_op(String post, char first) throws IOException {
+		String op = "";
+		System.out.println(post);
+		String[] postfix = post.split(" ");
+
+		for (int i = 0; i < postfix.length; i++) {
+			op = "";
+			String t = postfix[i];
+			if (t.equals("+")) {
+				op = line + ":	" + first + "add";
+				System.out.println(op);
+				writeByteCode(op);
+				line++;
+			} else if (t.equals("-")) {
+				op = line + ":	" + first + "sub";
+				line++;
+				System.out.println(op);
+				writeByteCode(op);
+			} else if (t.equals("*")) {
+				op = line + ":	" + first + "mul";
+				line++;
+				System.out.println(op);
+				writeByteCode(op);
+			} else if (t.equals("%")) {
+				op = line + ":	" + first + "rem";
+				line++;
+				System.out.println(op);
+				writeByteCode(op);
+			} else if (t.equals("/")) {
+				op = line + ":	" + first + "div";
+				line++;
+				System.out.println(op);
+				writeByteCode(op);
+			} else {
+
+				// either digit or variable
+				String write = "";
+				if (Character.isDigit(t.charAt(0))) {
+					if (Integer.parseInt(t) <= 5) {
+						write = line + ":	" + first + "const_" + t;
+						line++;
+					} else
+						write = get_type(Integer.parseInt(t)) + first + "push " + t;
+
+				} else if (Character.isAlphabetic(t.charAt(0))) {
+					
+					int num_one = numOrVariable(t, first);
+					if (num_one != -1) {
+						if (num_one <= 3) {
+							write = line + ":	" + first + "load_" + num_one;
+							line++;
+						} else {
+							write = line + ":	" + first + "load " + num_one;
+							line += 2;
+						}
+					}
+				}
+				System.out.println(write);
+				writeByteCode(write);
+			}
+
+		}
+
+	}
+
+	private String get_type(int num) {
+		char length = 'b';
+
+		int r = line;
+		if (num > 127)
+			length = 's';
+
+		if (length == 's')
+			line += 3;
+		else
+			line += 2;
+
+		return r + ":	" + length;
+	}
+
 	private void handleOp(String operation, char first) throws IOException {
+		System.out.println(operation);
 		String op = "";
 		String[] split;
 		if (operation.contains("+")) {
@@ -585,6 +669,55 @@ public class JavaCodeGeneration {
 		} else
 			tempWhile = tempWhile + "\n" + write;
 
+	}
+
+	private String convert_to_postfix(String op) {
+		System.out.println(op);
+		op = op.trim();
+		String[] operation = op.split(" ");
+		String postfix = "";
+		Stack<String> s = new Stack<String>();
+
+		for (int i = 0; i < operation.length; i++) {
+			String temp = operation[i];
+			if (Character.isDigit(temp.charAt(0)) || Character.isAlphabetic(temp.charAt(0)))
+				postfix = postfix + " " + temp;
+			else if (temp.equals("("))
+				s.push(temp);
+			else if (temp.equals("^"))
+				s.push(temp);
+			else if (temp.equals(")")) {
+				while (!s.isEmpty() && !s.peek().equals("(")) {
+					postfix = postfix + " " + s.pop();
+				}
+				s.pop();
+			} else {
+
+				while (!s.isEmpty() && (preced(temp) <= preced(s.peek()))) {
+					postfix = postfix + " " + s.pop();
+				}
+				s.push(temp);
+			}
+		}
+
+		while (!s.isEmpty()) {
+			postfix = postfix + " " + s.pop();
+		}
+
+		postfix = postfix.trim();
+		return postfix;
+	}
+
+	private int preced(String ch) {
+		if (ch.equals("+") || ch.equals("-")) {
+			return 1;
+		} else if (ch.equals("*") || ch.equals("/")) {
+			return 2;
+		} else if (ch.equals("^")) {
+			return 3;
+		} else {
+			return 0;
+		}
 	}
 
 	private int numOrVariable(String split, char first) throws IOException {

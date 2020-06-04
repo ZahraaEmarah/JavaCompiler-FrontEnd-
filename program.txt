@@ -1,4 +1,4 @@
-boolean n = true;
-if(!n)
-{
-}
+int x = 8;
+int y = 7;
+
+int z = 7 / x ;
