@@ -160,7 +160,9 @@ public class JavaCodeGeneration {
 				handleInc(tempString);
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
-				if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
+				if (tempString.contains("!="))
+					ifCondition(tempString);
+				else if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
 					handleBoolean(tempString);
 				else
 					ifCondition(tempString);
@@ -284,7 +286,6 @@ public class JavaCodeGeneration {
 			handleConstants(declaration, 0);
 		forNum = line;
 		ifCondition(ifCondition);
-
 		incrementFor = 1;
 		tempFor = increment;
 
@@ -550,7 +551,8 @@ public class JavaCodeGeneration {
 
 	}
 
-	private void handle_A_op(String post, char first, String program) throws IOException {
+	private void handle_A_op(String post, 
+			char first, String program) throws IOException {
 		System.out.println(post);
 		String[] postfix = post.split(" ");
 		String write = "";
@@ -639,11 +641,13 @@ public class JavaCodeGeneration {
 		
 		String[] LHS = program.split("="); // int x || x
 		
-		if(program.contains("int") || program.contains("float")) //undeclared variable
+		if(program.contains("int") || program.contains("float")) 
+			//undeclared variable
 		{
 			String[] v = LHS[0].split(" "); // x
 			String var = v[1].trim();
-			write = "\n" +line + ":	" + first + "store " + numOfVariables;
+			write = "\n" +line + ":	" + first 
+					+ "store " + numOfVariables;
 			if(isBoolean)
 				tempBoo = tempBoo+write;
 			else if (isWhile == 0) {		
@@ -651,7 +655,7 @@ public class JavaCodeGeneration {
 			} else
 				tempWhile = tempWhile + "\n" + write;
 			line++;
-			variable.add(var);
+			variable.add(var); // Declare the new variable
 			numOfVariables++;	
 		}
 		else // declared before
@@ -680,6 +684,7 @@ public class JavaCodeGeneration {
 	}
 
 	private void handleOp(String operation, char first) throws IOException {
+		
 		System.out.println(operation);
 		String op = "";
 		String[] split;
@@ -931,7 +936,7 @@ public class JavaCodeGeneration {
 			}
 		}
 
-		if (num > 0) {
+		if (num >= 0) {
 
 			// in the range of 0-5
 			write = line + ":" + "\t" + first + "const_" + check;
