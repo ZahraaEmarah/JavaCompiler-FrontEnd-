@@ -1,3 +1,4 @@
+package bytecodeGeneration;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -6,6 +7,10 @@ import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import lexicalAnalaysis.LexicalRules;
+import parser.readCFG;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;

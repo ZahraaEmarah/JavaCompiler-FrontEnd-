@@ -1,3 +1,4 @@
+package bytecodeGeneration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +31,7 @@ public class JavaCodeGeneration {
 	boolean isBoolean = false;
 	boolean isLast = false;
 	boolean orflag = false;
-	int stat = 0;
+	public int stat = 0;
 	ArrayList<String> boovariable = new ArrayList<String>();
 	ArrayList<String> variable = new ArrayList<String>();
 	ArrayList<Character> variableDeclaration = new ArrayList<Character>();
@@ -160,7 +161,7 @@ public class JavaCodeGeneration {
 			} else if (tempString.contains("if")) {
 				// we check the condition of the if
 				if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
-					{handleBoolean(tempString); System.out.println(tempBoo);}
+					handleBoolean(tempString);
 				else
 					ifCondition(tempString);
 			} else if (tempString.contains("=")) {
@@ -168,7 +169,6 @@ public class JavaCodeGeneration {
 			}
 
 		}
-		System.out.println("shitt\n" + tempBoo);
 		writeByteCode(line + ":\treturn");
 		fileWriter.close();
 		buffer.close();
@@ -476,6 +476,7 @@ public class JavaCodeGeneration {
 		// id = number op number ------
 		/** id = id **/
 
+		program = program.trim();
 		char first = program.charAt(0);
 		if (first == 'b') {
 			first = 'i';
@@ -506,7 +507,6 @@ public class JavaCodeGeneration {
 				tempWhile = tempWhile + "\n" + write;
 			variable.add(program.split(" ")[1].replace(";", ""));
 			numOfVariables++;
-
 			return;
 		}
 
@@ -662,12 +662,10 @@ public class JavaCodeGeneration {
 				write = "\n" +line + ":	" + first + "store " + index;
 				if(isBoolean)
 					tempBoo = tempBoo+write;
-		
 				line++;
 			}
 		}
 
-		System.out.println("****************\n" + write + "\n******************\n");
 		if (dontWrite == 0 && isWhile == 0) {
 			if(isBoolean)
 				writeByteCode(tempBoo);

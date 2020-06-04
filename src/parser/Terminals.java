@@ -1,3 +1,4 @@
+package parser;
 
 public class Terminals {
 	private int index;

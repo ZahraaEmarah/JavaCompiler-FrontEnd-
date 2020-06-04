@@ -1,12 +1,4 @@
-float x = 12.3;
-int z = 9;
-int n = 8;
-float f = 8.3;
-boolean d = true;
-
-while ( x > z )
+boolean x = true;
+if()
 {
-
- z = 2 * ( 2 + x ) + 7 ;
- 
 }

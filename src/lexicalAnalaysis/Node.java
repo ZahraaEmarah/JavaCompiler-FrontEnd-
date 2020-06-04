@@ -1,3 +1,4 @@
+package lexicalAnalaysis;
 import java.util.ArrayList;
 
 public class Node {

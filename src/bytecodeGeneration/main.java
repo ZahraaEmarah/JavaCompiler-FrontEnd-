@@ -1,4 +1,8 @@
+package bytecodeGeneration;
 import java.io.IOException;
+
+import lexicalAnalaysis.LexicalRules;
+import parser.readCFG;
 
 public class main {
 	static LexicalRules lexicalRules;

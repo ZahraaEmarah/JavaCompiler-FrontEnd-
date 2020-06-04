@@ -1,3 +1,4 @@
+package lexicalAnalaysis;
 import java.util.*;
 
 public class DFA_minimization {

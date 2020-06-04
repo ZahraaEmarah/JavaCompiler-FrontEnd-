@@ -1,3 +1,4 @@
+package lexicalAnalaysis;
 import java.util.Stack;
 
 public class NFA {

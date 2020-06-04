@@ -1,3 +1,4 @@
+package lexicalAnalaysis;
 
 public class TransitionTable {
 	Character[] inputs;
