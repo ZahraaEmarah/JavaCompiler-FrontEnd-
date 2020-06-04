@@ -145,12 +145,14 @@ public class gui {
 					try {
 						BufferedReader in = new BufferedReader(new FileReader("bytecode.txt"));
 						String line;
+						String file = new String();
 						line = in.readLine();
 						while (line != null) {
-							textArea_1.append(line + "\n");
+							file = file + line + "\n";
 							line = in.readLine();
 						}
 						in.close();
+						textArea_1.setText(file);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
