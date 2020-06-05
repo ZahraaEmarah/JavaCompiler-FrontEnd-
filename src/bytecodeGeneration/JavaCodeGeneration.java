@@ -13,12 +13,7 @@ import java.util.Stack;
 public class JavaCodeGeneration {
 	// Generate the Java Byte Code
 	/**
-	 * ILOAD 2 
-	 * ICONST_5 
-	 * IF_ICMPGE return 
-	 * ILOAD 1 
-	 * SIPUSH 200 
-	 * IF_ICMPGT loop
+	 * ILOAD 2 ICONST_5 IF_ICMPGE return ILOAD 1 SIPUSH 200 IF_ICMPGT loop
 	 **/
 	FileWriter fileWriter;
 	int numOfVariables;
@@ -120,7 +115,7 @@ public class JavaCodeGeneration {
 						}
 						isBoolean = false;
 					} else {
-						
+
 						tempWhile = tempWhile.replace("~", Integer.toString(t));
 					}
 
@@ -142,26 +137,37 @@ public class JavaCodeGeneration {
 				}
 				if (isWhile == 1 && tempString.contains("}")) {
 
-					String[] conditions = null ;
-					if(isBoolean) {
+					String[] conditions = null;
+					if (isBoolean) {
 						conditions = handleBooleanWhile(whileCondition);
-						
-						for(int i=0; i< conditions.length; i++)
-						{
-							if(i == conditions.length - 1)
+						if (conditions == null)
+							break;
+
+						for (int i = 0; i < conditions.length; i++) {
+							if (i == conditions.length - 1)
 								isLast = true;
-							if(i > 0)
+							if (i > 0)
 								lock = 1;
 							conditions[i] = "while( " + conditions[i] + " )";
 							ifCondition(conditions[i]);
 						}
-					tempWhile = tempWhile.replace("~", Integer.toString(line));
-					}else
-					{
+						tempWhile = tempWhile.replace("~", Integer.toString(line));
+					} else {
+
+						String temp = whileCondition.replaceAll("while", "");
+						temp = temp.replaceAll("\\)", "");
+						temp = temp.replaceAll("\\(", "");
+						temp = temp.trim();
+						if (boovariable.contains(temp)) {
+							whileCondition = "while( " + temp + " == 0 )";
+						} else if (!isRelop(temp)) {
+							stat = 1; // keep
+							break;
+						}
 						ifCondition(whileCondition);
-					}		
-					
-					isBoolean=false;
+					}
+
+					isBoolean = false;
 					lock = 0;
 					tempWhile = tempWhile.replace("^", Integer.toString(whileNum1));
 					isWhile = whileNum1 = whileNum2 = 0;
@@ -183,7 +189,7 @@ public class JavaCodeGeneration {
 					tempWhile = tempWhile + "\n" + line + ":\t" + "go to" + " ~";
 				line += 3;
 			} else if (tempString.contains("while")) {
-				if(tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
+				if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
 					isBoolean = true;
 				whileCond(tempString);
 			} else if (tempString.contains("for")) {
@@ -196,10 +202,24 @@ public class JavaCodeGeneration {
 				// we check the condition of the if
 				if (tempString.contains("!="))
 					ifCondition(tempString);
-				else if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!"))
-					handleBoolean(tempString);
-				else
+				else if (tempString.contains("&&") || tempString.contains("or") || tempString.contains("!")) {
+					int s = handleBoolean(tempString);
+					if (s == 1)
+						break;
+				} else {
+					String temp = tempString.replaceAll("if", "");
+					temp = temp.replaceAll("\\)", "");
+					temp = temp.replaceAll("\\(", "");
+					temp = temp.trim();
+					if (boovariable.contains(temp)) {
+						tempString = "if( " + temp + " == 1 )";
+					} else if (!isRelop(tempString)) {
+						stat = 1;// keep
+						break;
+					}
+
 					ifCondition(tempString);
+				}
 			} else if (tempString.contains("=")) {
 				handleConstants(tempString, 0); // assignment with/without arithmetic op
 			}
@@ -210,9 +230,9 @@ public class JavaCodeGeneration {
 		buffer.close();
 
 	}
-	
-	private String[] handleBooleanWhile(String whileCondition)
-	{
+
+	private String[] handleBooleanWhile(String whileCondition) {
+
 		whileCondition = whileCondition.replaceAll("while", "");
 		whileCondition = whileCondition.replaceAll("\\)", "");
 		whileCondition = whileCondition.replaceAll("\\(", "");
@@ -220,35 +240,78 @@ public class JavaCodeGeneration {
 		System.out.println(whileCondition);
 		String[] conditions = null;
 
-		if(whileCondition.contains("&&") && whileCondition.contains("or") && whileCondition.contains("!"))
-		{
+		if ((whileCondition.contains("&&") && whileCondition.contains("or"))
+				|| (whileCondition.contains("&&") && whileCondition.contains("!"))
+				|| (whileCondition.contains("or") && whileCondition.contains("!"))
+				|| (whileCondition.contains("or") && whileCondition.contains("!")) && whileCondition.contains("&&")) {
 			// unsupported expression
-		}
-		else if(whileCondition.contains("&&"))
-		{
-			conditions = whileCondition.split("&&");
-			for(int i=0; i<conditions.length-1; i++)
-			{
-				conditions[i] = reverseOp(conditions[i]);
-			}
+			stat = 11;
+		} else if (whileCondition.contains("&&")) {
 			
-		}else if(whileCondition.contains("or"))
-		{
+			conditions = whileCondition.split("&&");
+			
+			for (int i = 0; i < conditions.length; i++) {
+
+				conditions[i] = conditions[i].trim();
+				
+				if (!isRelop(conditions[i])) {
+					if (boovariable.contains(conditions[i])) {
+						conditions[i] = conditions[i] + " == 1";
+						conditions[conditions.length-1] = reverseOp(conditions[conditions.length-1]);
+					} else {
+						stat = 1;
+						return null;
+					}
+				} else
+				{
+					conditions[conditions.length-1] = reverseOp(conditions[conditions.length-1]);
+				}
+			}
+
+		} else if (whileCondition.contains("or")) {
 			orflag = true;
 			conditions = whileCondition.split("or");
-			conditions[(conditions.length-1)] = reverseOp(conditions[(conditions.length-1)]);
+			for (int i = 0; i < conditions.length; i++) {
+				conditions[i] = conditions[i].trim();
+				if (!isRelop(conditions[i])) {
+					if (boovariable.contains(conditions[i])) {
+						conditions[i] = conditions[i] + " == 0";
+					} else {
+						stat = 1;
+						return null;
+					}
+				} else {
+					conditions[i] = reverseOp(conditions[i]);
+				}
+			}
 
-			
-		}else if(whileCondition.contains("!"))
-		{
-			
+		} else if (whileCondition.contains("!")) {
+
+			whileCondition = whileCondition.replaceAll("!", "");
+
+			/// ! + relop
+			if (isRelop(whileCondition)) {
+				whileCondition = whileCondition.trim();
+				conditions = new String[1];
+				conditions[0] = whileCondition;
+			}
+			/// ! + boolean variable
+			else if (boovariable.contains(whileCondition.trim())) {
+				conditions = new String[1];
+				conditions[0] = whileCondition + " != 0";
+				System.out.println(conditions[0]);
+			}
+			/// illegal or unsupported operation
+			else {
+				stat = 11;
+			}
+
 		}
-		
+
 		return conditions;
 	}
-	
-	private String reverseOp(String temp)
-	{
+
+	private String reverseOp(String temp) {
 		if (temp.contains(">"))
 			temp = temp.replaceAll(">", "<");
 		else if (temp.contains("<"))
@@ -261,14 +324,22 @@ public class JavaCodeGeneration {
 			temp = temp.replaceAll("!=", "==");
 		else if (temp.contains("=="))
 			temp = temp.replaceAll("==", "!=");
-		
+
 		return temp;
 	}
-	
-	private void handleBoolean(String program) throws IOException {
+
+	private int handleBoolean(String program) throws IOException {
 
 		program = program.replaceAll("if", "");
-		if (program.contains("&&")) // expression has "&&" only
+		int s = 0;
+
+		if ((program.contains("&&") && program.contains("or")) || (program.contains("&&") && program.contains("!"))
+				|| (program.contains("or") && program.contains("!"))
+				|| (program.contains("or") && program.contains("!")) && program.contains("&&")) {
+			// unsupported expression
+			stat = 11;
+			s = 1;
+		} else if (program.contains("&&")) // expression has "&&" only
 		{
 			String[] temp = program.split("&&");
 			for (int i = 0; i < temp.length; i++) {
@@ -287,19 +358,9 @@ public class JavaCodeGeneration {
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
+
 				if (i < temp.length - 1) {
-					if (temp[i].contains(">"))
-						temp[i] = temp[i].replaceAll(">", "<");
-					else if (temp[i].contains("<"))
-						temp[i] = temp[i].replaceAll("<", ">");
-					else if (temp[i].contains("<="))
-						temp[i] = temp[i].replaceAll("<=", ">=");
-					else if (temp[i].contains(">="))
-						temp[i] = temp[i].replaceAll(">=", "<=");
-					else if (temp[i].contains("!="))
-						temp[i] = temp[i].replaceAll("!=", "==");
-					else if (temp[i].contains("=="))
-						temp[i] = temp[i].replaceAll("==", "!=");
+					temp[i] = reverseOp(temp[i]);
 				} else {
 					isLast = true;
 				}
@@ -315,20 +376,11 @@ public class JavaCodeGeneration {
 			program = program.replaceAll("\\)", "");
 			program = program.trim();
 			if (isRelop(program)) { // Not + relop
-				if (program.contains(">"))
-					program = program.replaceAll(">", "<");
-				else if (program.contains("<"))
-					program = program.replaceAll("<", ">");
-				else if (program.contains("<="))
-					program = program.replaceAll("<=", ">=");
-				else if (program.contains(">="))
-					program = program.replaceAll(">=", "<=");
-				else if (program.contains("!="))
-					program = program.replaceAll("!=", "==");
-				else if (program.contains("=="))
-					program = program.replaceAll("==", "!=");
+
+				program = reverseOp(program);
 				program = "if ( " + program + " ) ";
 				ifCondition(program);
+
 			} else // Not + id
 			{
 				if (boovariable.contains(program.trim())) {
@@ -341,6 +393,8 @@ public class JavaCodeGeneration {
 		}
 		booline = line; // save the line number of the beginning of the statement inside the
 						// if-condition for back patching
+
+		return s;
 	}
 
 	private boolean isRelop(String program) {
@@ -398,8 +452,8 @@ public class JavaCodeGeneration {
 		String op2 = getOpCondition(condition);
 		// check if the condition has ZERO or not
 		String op1;
-		if(lock == 0)
-		    whileNum1 = line;
+		if (lock == 0)
+			whileNum1 = line;
 		if (condition.contains(" 0 "))
 			op1 = "if";
 
@@ -475,13 +529,12 @@ public class JavaCodeGeneration {
 
 		if (isWhile == 1) {
 			if (!split[0].replaceAll("\\s", "").equals("if")) {
-				
-				if(!isLast && isBoolean && !orflag)
+
+				if (!isLast && isBoolean && !orflag)
 					tempWhile = tempWhile + "\n" + line + ":" + "\t" + op1 + op2 + " ~";
 				else
 					tempWhile = tempWhile + "\n" + line + ":" + "\t" + op1 + op2 + " " + whileNum2;
-			}
-			else {
+			} else {
 				dontWrite = 1;
 				tempWhile = tempWhile + "\n" + line + ":\t" + op1 + op2 + " ~" + "\n";
 			}

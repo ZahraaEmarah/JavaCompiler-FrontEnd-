@@ -1,7 +1,8 @@
-int t = 200;
-int z = 5;
-while(( z < 5 ) or ( t > 200 ) or (t == 8))
+boolean x = true;
+boolean y = true;
+boolean z = true;
+while( x  && y && z )
 {
-	int d = 400;
+  int f = 100;
 }
 

@@ -65,11 +65,13 @@ public class ReadTokens {
 			outputFile.close();
 			JavaCodeGeneration code = new JavaCodeGeneration();
 			if(code.stat == 1)
-				console = "Boolean undeclared";
+				console = "Boolean undeclared\n";
+			if(code.stat == 11)
+				console = "Illegal or unsupported operation\n";
 
 		}else
 		{  	outputFile.close();
-		    console = "SYNTAX ERROR";
+		    console = "SYNTAX ERROR\n";
 			System.out.println("\nSYNTAX ERROR\n" + output);
 		}
 		

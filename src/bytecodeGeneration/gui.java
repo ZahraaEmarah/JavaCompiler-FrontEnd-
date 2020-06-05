@@ -144,7 +144,7 @@ public class gui {
 				}
 
 				textArea_1.setText("");
-				if (CFG.console.equals("ACCEPTED")) {
+				if (CFG.console.equals("ACCEPTED")){
 					textArea_2.setForeground(new Color(0, 128, 0));
 					textArea_2.setText(CFG.console);
 					try {
@@ -162,8 +162,9 @@ public class gui {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else {
-
+				}
+				else{
+					
 					textArea_2.setForeground(Color.RED);
 					textArea_2.setText(CFG.console);
 				}
