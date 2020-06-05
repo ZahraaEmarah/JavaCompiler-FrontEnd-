@@ -1,6 +1,6 @@
 int t = 200;
 int z = 5;
-while( z < 5 )
+while(( z < 5 ) or ( t > 200 ) or (t == 8))
 {
 	int d = 400;
 }

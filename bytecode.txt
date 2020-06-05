@@ -8,5 +8,11 @@
 13:	iconst_5
 14:	iload_1
 15:	if_icmpgt 9
-18:	return
+18:	sipush	200
+21:	iload_0
+22:	if_icmplt 9
+25:	bipush	8
+27:	iload_0
+28:	if_icmpeq 9
+31:	return
 

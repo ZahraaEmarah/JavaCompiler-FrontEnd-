@@ -234,7 +234,10 @@ public class JavaCodeGeneration {
 			
 		}else if(whileCondition.contains("or"))
 		{
+			orflag = true;
 			conditions = whileCondition.split("or");
+			conditions[(conditions.length-1)] = reverseOp(conditions[(conditions.length-1)]);
+
 			
 		}else if(whileCondition.contains("!"))
 		{
@@ -473,7 +476,7 @@ public class JavaCodeGeneration {
 		if (isWhile == 1) {
 			if (!split[0].replaceAll("\\s", "").equals("if")) {
 				
-				if(!isLast && isBoolean)
+				if(!isLast && isBoolean && !orflag)
 					tempWhile = tempWhile + "\n" + line + ":" + "\t" + op1 + op2 + " ~";
 				else
 					tempWhile = tempWhile + "\n" + line + ":" + "\t" + op1 + op2 + " " + whileNum2;
