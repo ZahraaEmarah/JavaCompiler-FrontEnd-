@@ -1,8 +1,6 @@
 boolean x = true;
 boolean y = true;
-boolean z = true;
-while( x  && y && z )
+while( x or y or z )
 {
   int f = 100;
 }
-

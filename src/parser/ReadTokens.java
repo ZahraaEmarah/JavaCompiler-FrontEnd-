@@ -65,7 +65,7 @@ public class ReadTokens {
 			outputFile.close();
 			JavaCodeGeneration code = new JavaCodeGeneration();
 			if(code.stat == 1)
-				console = "Boolean undeclared\n";
+				console = "Boolean variable undeclared\n";
 			if(code.stat == 11)
 				console = "Illegal or unsupported operation\n";
 

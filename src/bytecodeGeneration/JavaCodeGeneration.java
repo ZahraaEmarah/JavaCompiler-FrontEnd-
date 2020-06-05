@@ -247,24 +247,23 @@ public class JavaCodeGeneration {
 			// unsupported expression
 			stat = 11;
 		} else if (whileCondition.contains("&&")) {
-			
+
 			conditions = whileCondition.split("&&");
-			
+
 			for (int i = 0; i < conditions.length; i++) {
 
 				conditions[i] = conditions[i].trim();
-				
+
 				if (!isRelop(conditions[i])) {
 					if (boovariable.contains(conditions[i])) {
 						conditions[i] = conditions[i] + " == 1";
-						conditions[conditions.length-1] = reverseOp(conditions[conditions.length-1]);
+						conditions[conditions.length - 1] = reverseOp(conditions[conditions.length - 1]);
 					} else {
 						stat = 1;
 						return null;
 					}
-				} else
-				{
-					conditions[conditions.length-1] = reverseOp(conditions[conditions.length-1]);
+				} else {
+					conditions[conditions.length - 1] = reverseOp(conditions[conditions.length - 1]);
 				}
 			}
 
@@ -346,7 +345,13 @@ public class JavaCodeGeneration {
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
-				temp[i] = "if ( " + temp[i] + " ) ";
+				// check here
+				if (isRelop(temp[i])) {	
+					temp[i] = "if ( " + temp[i] + " ) ";
+				}else
+				{
+					temp[i] = "if ( " + temp[i] + " == 1 ) ";
+				}
 				isBoolean = true;
 				ifCondition(temp[i]);
 			}
@@ -355,9 +360,14 @@ public class JavaCodeGeneration {
 			orflag = true;
 			String[] temp = program.split("or");
 			for (int i = 0; i < temp.length; i++) {
+				// check here
+				
 				temp[i] = temp[i].replaceAll("\\(", "");
 				temp[i] = temp[i].replaceAll("\\)", "");
 				temp[i] = temp[i].trim();
+				
+				if(!isRelop(temp[i])) 
+					temp[i] = temp[i] + " == 1";
 
 				if (i < temp.length - 1) {
 					temp[i] = reverseOp(temp[i]);
