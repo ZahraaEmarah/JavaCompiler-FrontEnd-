@@ -280,7 +280,8 @@ public class JavaCodeGeneration {
 						return null;
 					}
 				} else {
-					conditions[i] = reverseOp(conditions[i]);
+					if(i < conditions.length - 1)
+						conditions[i] = reverseOp(conditions[i]);
 				}
 			}
 
@@ -717,7 +718,7 @@ public class JavaCodeGeneration {
 			String t = postfix[i];
 			if (t.equals("+")) {
 				write = "\n" + line + ":	" + first + "add";
-				if (isBoolean)
+				if (isBoolean && isWhile == 0)
 					tempBoo = tempBoo + write;
 				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
@@ -726,7 +727,7 @@ public class JavaCodeGeneration {
 				line++;
 			} else if (t.equals("-")) {
 				write = "\n" + line + ":	" + first + "sub";
-				if (isBoolean)
+				if (isBoolean&& isWhile == 0)
 					tempBoo = tempBoo + write;
 				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
@@ -735,7 +736,7 @@ public class JavaCodeGeneration {
 				line++;
 			} else if (t.equals("*")) {
 				write = "\n" + line + ":	" + first + "mul";
-				if (isBoolean)
+				if (isBoolean && isWhile == 0)
 					tempBoo = tempBoo + write;
 				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
@@ -744,7 +745,7 @@ public class JavaCodeGeneration {
 				line++;
 			} else if (t.equals("%")) {
 				write = "\n" + line + ":	" + first + "rem";
-				if (isBoolean)
+				if (isBoolean&& isWhile == 0)
 					tempBoo = tempBoo + write;
 				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;
@@ -753,7 +754,7 @@ public class JavaCodeGeneration {
 				line++;
 			} else if (t.equals("/")) {
 				write = "\n" + line + ":	" + first + "div";
-				if (isBoolean)
+				if (isBoolean&& isWhile == 0)
 					tempBoo = tempBoo + write;
 				else if (isWhile == 0) {
 					writeTemp = writeTemp + "\n" + write;

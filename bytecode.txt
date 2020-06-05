@@ -2,5 +2,33 @@
 1:	istore_0
 2:	iconst_1
 3:	istore_1
-10:	return
+4:	iconst_1
+5:	istore_2
+6:	go to	19
+9:	bipush	100
+11:	iconst_2
+12:	iconst_3
+13:	idiv
+14:	imul
+15:	bipush	10
+17:	iadd
+18:	istore 3
+19:	bipush	8
+21:	iload_0
+22:	if_icmpeq 9
+25:	bipush	8
+27:	iload_1
+28:	if_icmpeq 9
+31:	bipush	9
+33:	iload_2
+34:	if_icmpgt 9
+37:	bipush	 9
+39:	istore 4
+41:	iload_0
+42:	ifne 51
+45:	iload 4
+47:	bipush	9
+49:	iadd
+50:	istore 4
+51:	return
 
