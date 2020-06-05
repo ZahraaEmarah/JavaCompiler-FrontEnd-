@@ -1,0 +1,12 @@
+0:	sipush	 200
+3:	istore_0
+4:	iconst_ 5
+5:	istore_1
+6:	go to	13
+9:	sipush	 400
+12:	istore_2
+13:	iconst_5
+14:	iload_1
+15:	if_icmpgt 9
+18:	return
+
