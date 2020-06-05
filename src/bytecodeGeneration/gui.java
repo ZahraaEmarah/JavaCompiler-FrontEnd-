@@ -3,6 +3,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
@@ -12,6 +14,9 @@ import lexicalAnalaysis.LexicalRules;
 import parser.readCFG;
 
 import java.awt.Font;
+import java.awt.GridBagLayout;
+
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -55,24 +60,26 @@ public class gui {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(0, 0, 51));
+		frame.setBackground(new Color(0, 0, 51));
 		frame.setBounds(100, 100, 718, 741);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(153, 0, 51));
+		panel.setBackground(new Color(0, 0, 51));
 		panel.setBounds(0, 0, 702, 702);
 		frame.getContentPane().add(panel);
 
 		JTextArea textArea = new JTextArea();
 		textArea.setFont(new Font("Monospaced", Font.BOLD, 17));
-		textArea.setBackground(Color.PINK);
+		textArea.setBackground(new Color(204, 204, 204));
 		textArea.setBounds(47, 107, 300, 410);
 
 		JTextArea textArea_1 = new JTextArea();
 		textArea_1.setEditable(false);
 		textArea_1.setFont(new Font("Monospaced", Font.BOLD, 17));
-		textArea_1.setBackground(Color.PINK);
+		textArea_1.setBackground(new Color(204, 204, 204));
 		textArea_1.setBounds(355, 106, 300, 410);
 		panel.setLayout(null);
 
@@ -88,7 +95,7 @@ public class gui {
 		textArea_2.setEditable(false);
 		textArea_2.setFont(new Font("Monospaced", Font.BOLD, 17));
 		textArea_2.setBounds(45, 625, 608, 40);
-		textArea_2.setBackground(Color.PINK);
+		textArea_2.setBackground(new Color(204, 204, 204));
 
 		JScrollPane scrollPane_2 = new JScrollPane(textArea_2);
 		scrollPane_2.setBounds(45, 598, 610, 67);
@@ -97,7 +104,7 @@ public class gui {
 		JLabel lblLabel = new JLabel("Java Compiler");
 		lblLabel.setBounds(45, 21, 610, 42);
 		lblLabel.setForeground(Color.LIGHT_GRAY);
-		lblLabel.setFont(new Font("Traditional Arabic", Font.PLAIN, 35));
+		lblLabel.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 41));
 		lblLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblLabel);
 

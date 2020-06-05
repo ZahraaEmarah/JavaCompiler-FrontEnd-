@@ -1,15 +1,1 @@
-boolean x = true;
-boolean y = true;
-boolean z = true;
-while( (x == 8) or (y == 8) or (z < 9))
-{
-  int f = 100 * ( 2 / 3 ) + 10;
-}
-
-int k = 9;
-if( x == 0 )
-{
-  k = k + 9;
-}
-
 
