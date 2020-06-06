@@ -1,8 +1,7 @@
 for
 (
 int
-id
-assign 
+=error
 num
 ;
 id

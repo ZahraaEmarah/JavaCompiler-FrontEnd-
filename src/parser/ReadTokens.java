@@ -42,9 +42,9 @@ public class ReadTokens {
 					line = line.trim();
 					input.push(line);
 				} else {
-					console = "PHASE ONE HAS ERROR";
+					console = "Missing space";
 					System.out.println("PHASE ONE HAS ERROR");
-					System.exit(0);
+					break;
 				}
 				// read next line
 				line = reader.readLine();
@@ -52,6 +52,11 @@ public class ReadTokens {
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		if(console.equals("Missing space"))
+		{
+			return console;
 		}
 
 		stack.push(startNonTerminal);
