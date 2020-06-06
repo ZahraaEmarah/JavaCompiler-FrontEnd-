@@ -109,6 +109,7 @@ public class JavaCodeGeneration {
 							if (tempBoo.contains("#"))
 								tempBoo = tempBoo.replaceAll("#", Integer.toString(booline));
 							writeByteCode(tempBoo);
+							tempBoo = "";
 						} 
 						else if(incrementFor == 0)
 						{
