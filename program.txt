@@ -1,6 +1,18 @@
-int x = 7;
-for( int i = 0; i < 10; i ++)
+int i = 0;
+boolean x = true;
+boolean y = false;
+if( x && y )
 {
-   x ++;
+   i ++;
+}
+
+while( x or y )
+{
+   i ++;
+}
+
+if( !x )
+{
+   i ++;
 }
 
