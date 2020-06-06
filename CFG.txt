@@ -14,11 +14,12 @@
 # IF ::= 'if' '(' EXPRESSION ')' '{' STATEMENT '}'  
 # ELSE ::= 'else' '{' STATEMENT '}' | ~ 
 # WHILE ::= 'while' '(' EXPRESSION ')' '{' STATEMENT '}' 
-# FOR ::= 'for' '(' DECLARATION EXPRESSION ';' FORARGS ')' '{' STATEMENT_LIST '}'
-# FORARGS ::= 'id' LINKER LINKER2
+# FOR ::= 'for' '(' DECLARATION EXPRESSION ';' INCREMENT ')' '{' STATEMENT_LIST '}'
+# INCREMENT ::= 'id' LINKER LINKER2
 # LINKER2 ::= 'id' OPS FACTOR | ~ 
 # LINKER ::= 'addop' 'addop' | 'assign' 
-# ASSIGNMENT ::= 'id' 'assign' EXPRESSION ';'  
+# ASSIGNMENT ::= 'id' TRANS   
+# TRANS ::= 'assign' EXPRESSION ';' | 'addop' 'addop' ';' 
 # EXPRESSION ::= SIMPLE_EXPRESSION | SIMPLE_EXPRESSION 'relop' SIMPLE_EXPRESSION | SIMPLE_EXPRESSION AND | SIMPLE_EXPRESSION OR | NOT 
 # BOO_EXPRESSION ::=  'true' | 'false' | ~ 
 # SIMPLE_EXPRESSION ::= TERM | SIGN TERM | SIMPLE_EXPRESSION 'addop' TERM 

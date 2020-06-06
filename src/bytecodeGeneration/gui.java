@@ -3,20 +3,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-
 import lexicalAnalaysis.LexicalRules;
 import parser.readCFG;
-
 import java.awt.Font;
-import java.awt.GridBagLayout;
-
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;

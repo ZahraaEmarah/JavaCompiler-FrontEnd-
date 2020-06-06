@@ -39,6 +39,7 @@ public class ReadTokens {
 			while (line != null) {
 
 				if (!line.contains("error")) {
+					line = line.trim();
 					input.push(line);
 				} else {
 					console = "PHASE ONE HAS ERROR";
@@ -68,6 +69,8 @@ public class ReadTokens {
 				console = "Boolean variable undeclared\n";
 			if(code.stat == 11)
 				console = "Illegal or unsupported operation\n";
+			if(code.stat == 5)
+				console = "Variable undeclared\n";
 
 		}else
 		{  	outputFile.close();
