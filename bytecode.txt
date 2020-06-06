@@ -1,15 +1,12 @@
-0:	iconst_ 0
-1:	istore_0
-2:	bipush	10
-4:	iload_0
-5:	if_icmplt 22
-8:	iconst_2
-9:	iload_0
-10:	imul
-11:	sipush	1000
-14:	iadd
-15:	istore 1
-16:	iinc	0,1
-19:	goto	2
-22:	return
+0:	bipush	 7
+2:	istore_0
+3:	iconst_ 0
+4:	istore_1
+5:	bipush	10
+7:	iload_1
+8:	if_icmplt 20
+11:	iinc	0,1
+14:	iinc	1,1
+17:	goto	5
+20:	return
 

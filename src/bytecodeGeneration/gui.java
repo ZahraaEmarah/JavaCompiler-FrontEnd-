@@ -71,7 +71,7 @@ public class gui {
 
 		JTextArea textArea_1 = new JTextArea();
 		textArea_1.setEditable(false);
-		textArea_1.setFont(new Font("Monospaced", Font.BOLD, 17));
+		textArea_1.setFont(new Font("Monospaced", Font.BOLD, 15));
 		textArea_1.setBackground(new Color(204, 204, 204));
 		textArea_1.setBounds(355, 106, 300, 410);
 		panel.setLayout(null);

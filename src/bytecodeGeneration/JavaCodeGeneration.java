@@ -287,8 +287,8 @@ public class JavaCodeGeneration {
 						return null;
 					}
 				} else {
-					if (i < conditions.length - 1)
-						conditions[i] = reverseOp(conditions[i]);
+					//if (i < conditions.length - 1)
+						//conditions[i] = reverseOp(conditions[i]);
 				}
 			}
 
@@ -376,7 +376,7 @@ public class JavaCodeGeneration {
 				if (!isRelop(temp[i]))
 					temp[i] = temp[i] + " == 1";
 
-				if (i < temp.length - 1) {
+				if (i == temp.length - 1) {
 					temp[i] = reverseOp(temp[i]);
 				} else {
 					isLast = true;
@@ -734,6 +734,7 @@ public class JavaCodeGeneration {
 		System.out.println(post);
 		String[] postfix = post.split(" ");
 		String write = "";
+		dontWrite = 1;
 
 		for (int i = 0; i < postfix.length; i++) {
 			String t = postfix[i];
@@ -826,7 +827,14 @@ public class JavaCodeGeneration {
 		{
 			String[] v = LHS[0].split(" "); // x
 			String var = v[1].trim();
-			write = "\n" + line + ":	" + first + "store " + numOfVariables;
+			
+			variable.add(var); // Declare the new variable
+			numOfVariables++;
+			
+			int index = numOrVariable(var, first); // get index of variable
+			
+			write = "\n" + line + ":	" + first + "store " + index;
+			
 			if (isBoolean)
 				tempBoo = tempBoo + write;
 			else if (isWhile == 0) {
@@ -834,8 +842,7 @@ public class JavaCodeGeneration {
 			} else
 				tempWhile = tempWhile + "\n" + write;
 			line++;
-			variable.add(var); // Declare the new variable
-			numOfVariables++;
+	
 		} else // declared before
 		{
 			String var = LHS[0].trim();
@@ -844,20 +851,25 @@ public class JavaCodeGeneration {
 				write = "\n" + line + ":	" + first + "store " + index;
 				if (isBoolean)
 					tempBoo = tempBoo + write;
+				else
+					writeTemp = writeTemp + write;
 				line++;
 			}
 		}
 
+		dontWrite = 0;
 		if (dontWrite == 0 && isWhile == 0) {
 			if (isBoolean)
 				writeByteCode(tempBoo);
-			else
-				writeByteCode(write);
+			else {
+				writeByteCode(writeTemp);
+				writeTemp = "";
+			}
 		} else if (isWhile == 0) {
-			writeTemp = writeTemp + "\n";
+			writeTemp = writeTemp + "\n" + write;
 		} else
-			tempWhile = tempWhile + "\n";
-
+			tempWhile = tempWhile + "\n" + write;
+		
 	}
 
 	private void handleOp(String operation, char first) throws IOException {
